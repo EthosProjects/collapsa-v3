@@ -1,5 +1,5 @@
 import express from 'express';
-import v1Router from './v1/v1Router.js'
+import v1Router from './v1/v1Router.js';
 import { JSONtoString } from '../../remastered-lib/util/export.js';
 const apiRouter = express.Router();
 apiRouter.use((req, res, next) => {

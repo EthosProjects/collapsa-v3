@@ -27,14 +27,15 @@ import express from 'express';
 const app = express();
 /**
  * @type {http.Server}
-*/
+ */
 let httpsServer;
 /**
  * @type {https.Server}
  */
 let httpServer;
+process.env.PORT = process.env.PORT | 443;
 if (process.env.NODE_ENV == 'development') {
-    httpsServer = https.createServer(httpsOptions, app).listen(443, () => {
+    httpsServer = https.createServer(httpsOptions, app).listen(process.env.PORT, () => {
         //loadEvents.set('HTTPS Server', ['HTTPS Server is listening', timerToString(Date.now() - loginStart)]);
         //checkStatus();
     });
@@ -55,7 +56,7 @@ if (process.env.NODE_ENV == 'development') {
     global.hServer = httpServer;
 }
 //MongoDB
-import { database, collection } from './mongoDB/export.js'
+import { database, collection } from './mongoDB/export.js';
 import mongoDB from './globals/mongoDB.js';
 /**
  * @type {database}
@@ -69,25 +70,30 @@ mongoDB.on('ready', () => {
     collapsa = mongoDB.databases.get('collapsa');
     collapsauserbase = collapsa.collections.get('collapsauserbase');
 });
+//Game Stuff
+import { Game } from './remastered-lib/v3Game.js';
+new Game('usaeast1');
 //Server Routing
 app.use(express.json());
 app.use(express.text());
 app.use(cors());
 //API
-import apiRouter from './api/routes/apiRouter.js'
-app.use('/api', apiRouter)
+import apiRouter from './api/routes/apiRouter.js';
+app.use('/api', apiRouter);
 //Game related
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const serveDir = (reqPath, searchPath) => {
-    if (process.env.NODE_ENV !== "development") app.use(reqPath, express.static(__dirname + path))
-    else app.use(reqPath, (req, res, next) => {
-        if(fs.existsSync('.' + searchPath + req.url)) res.sendFile(path.join(__dirname, searchPath + req.url))
-        else next();
-    })
-}
+    if (process.env.NODE_ENV !== 'development') app.use(reqPath, express.static(__dirname + path));
+    else
+        app.use(reqPath, (req, res, next) => {
+            if (fs.existsSync('.' + searchPath + req.url)) res.sendFile(path.join(__dirname, searchPath + req.url));
+            else next();
+        });
+};
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/v3client/html/index.html')));
-serveDir('/v3client', '/v3client')
-serveDir('/', '/v3client')
+serveDir('/v3client', '/v3client');
+serveDir('/', '/v3client');
+serveDir('/shared', '/shared');
 app.use((req, res, next) => {
     res.status(404).sendFile(__dirname + '/v3client/html/404.html');
 });

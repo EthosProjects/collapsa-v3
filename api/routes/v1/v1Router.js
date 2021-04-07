@@ -1,8 +1,8 @@
 import express from 'express';
 import fs from 'fs';
 import { JSONtoString } from '../../../remastered-lib/util/export.js';
-import { database, collection } from '../../../mongoDB/export.js'
-import mongoDB from '../../../globals/mongoDB.js'
+import { database, collection } from '../../../mongoDB/export.js';
+import mongoDB from '../../../globals/mongoDB.js';
 /**
  * @type {database}
  */
@@ -15,11 +15,11 @@ const development =
     process.env.NODE_ENV !== 'development'
         ? {}
         : {
-            /**
-             * @type {fs.WriteStream}
-            */
-            APILogStream: fs.createWriteStream('./api/logs/api.access.log', { flags: 'w' }),
-        };
+              /**
+               * @type {fs.WriteStream}
+               */
+              APILogStream: fs.createWriteStream('./api/logs/api.access.log', { flags: 'w' }),
+          };
 let v1Router = express.Router();
 import usersRouter from './users.js';
 import gamesRouter from './games.js';

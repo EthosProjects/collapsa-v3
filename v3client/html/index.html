@@ -2,7 +2,7 @@
     <head>
         <title>Collapsa.io</title>
         <link rel="stylesheet" type="text/css" href="/css/main.css" />
-<!--        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        <!--        <link rel="stylesheet" type="text/css" href="/css/style.css" />
         <link rel="stylesheet" type="text/css" href="/css/widget.css" />
         <link rel="stylesheet" type="text/css" href="/css/account.css" />-->
         <!-- Favicon-->
@@ -31,19 +31,20 @@
     <body>
         <div class="modal-container">
             <div id="enterGameModal" class="modal">
-                <form>
+                <form id="enterGameForm">
                     <h3 id="enterGameHeader">Join the collapse</h3>
                     <label id="enterGameUsernameInputLabel" class="modalInputLabel">
                         <input id="enterGameUsernameInput" maxlength="16" placeholder="Input Username" />
                     </label>
-                    <label>
-                        <select>
+                    <label id="enterGameServerSelectLabel">
+                        <select id="enterGameServerSelect">
                             <option value="usaeast1">USA East #1</option>
                         </select>
                     </label>
-                    <button type="submit">Play</button>
+                    <button id="enterGameSubmit" type="submit">Play</button>
                 </form>
             </div>
         </div>
     </body>
+    <script type="module" src="/js/main.js"></script>
 </html>

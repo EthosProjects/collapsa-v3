@@ -21,9 +21,7 @@ export const JSONtoString = (obj, currIndent = 1, depthLimit = 15) => {
             if (indentTimes > depthLimit) return new Array(indentTimes).fill('    ').join('') + 'Too Deep,\r\n';
             let str =
                 new Array(indentTimes).fill('    ').join('') +
-                `${
-                    typeof obj[prop] == 'object' ? JSONtoString(obj[prop], indentTimes + 1) : obj[prop]
-                },\r\n`;
+                `${typeof obj[prop] == 'object' ? JSONtoString(obj[prop], indentTimes + 1) : obj[prop]},\r\n`;
             return str;
         };
         for (const prop in obj) {
@@ -36,9 +34,7 @@ export const JSONtoString = (obj, currIndent = 1, depthLimit = 15) => {
             if (indentTimes > depthLimit) return new Array(indentTimes).fill('    ').join('') + 'Too Deep,\r\n';
             let str =
                 new Array(indentTimes).fill('    ').join('') +
-                `${prop}: ${
-                    typeof obj[prop] == 'object' ? JSONtoString(obj[prop], indentTimes + 1) : obj[prop]
-                },\r\n`;
+                `${prop}: ${typeof obj[prop] == 'object' ? JSONtoString(obj[prop], indentTimes + 1) : obj[prop]},\r\n`;
             return str;
         };
         for (const prop in obj) {

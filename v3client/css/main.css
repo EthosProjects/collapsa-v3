@@ -7,8 +7,10 @@ body {
   font-family: Sans, Arial;
 }
 
-input:focus, select:focus,
-textarea:focus, button:focus {
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
   outline: none;
 }
 
@@ -46,16 +48,40 @@ textarea:focus, button:focus {
 .modal-container #enterGameModal #enterGameHeader {
   text-align: center;
 }
-.modal-container #enterGameModal #enterGameUsernameInputLabel {
+.modal-container #enterGameModal label {
   margin-left: 10%;
-  margin-right: 10%;
+}
+.modal-container #enterGameModal label input,
+.modal-container #enterGameModal label select {
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0px;
+}
+.modal-container #enterGameModal #enterGameUsernameInputLabel {
   margin-bottom: 10px;
 }
 .modal-container #enterGameModal #enterGameUsernameInputLabel #enterGameUsernameInput {
   text-align: center;
-  padding: 10px;
   width: 90%;
+}
+.modal-container #enterGameModal #enterGameServerSelectLabel {
+  float: left;
+  text-align: left;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  width: calc(60% - 5px);
+}
+.modal-container #enterGameModal #enterGameServerSelectLabel #enterGameServerSelect {
+  width: 100%;
+}
+.modal-container #enterGameModal #enterGameSubmit {
+  padding: 10px;
+  border: none;
   border-radius: 5px;
+  float: left;
+  width: calc(20% - 1px);
+  font: 13px Helvetica, Arial;
   border: none;
 }
 
