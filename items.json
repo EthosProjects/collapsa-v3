@@ -1,0 +1,97 @@
+[
+    {
+        "name": "hand",
+        "description": "It's a hand",
+        "data": [0],
+        "image": "hand.png"
+    },
+    {
+        "name": "wood",
+        "description": "It's brown and sticky",
+        "data": [1, 1, 255, 0, 0, 0, 0, 0, 0],
+        "image": "wood.png"
+    },
+    {
+        "name": "stone",
+        "description": "It's a rock",
+        "data": [2, 1, 255, 0, 0, 0, 0, 0, 0],
+        "image": "stone.png"
+    },
+    {
+        "name": "iron",
+        "description": "It's hard",
+        "data": [3, 1, 255, 0, 0, 0, 0, 0, 0],
+        "image": "iron.png"
+    },
+    {
+        "name": "gold",
+        "description": "It's shiny",
+        "data": [4, 1, 255, 0, 0, 0, 0, 0, 0],
+        "image": "gold.png"
+    },
+    {
+        "name": "sand",
+        "description": "It's erm dusty?",
+        "data": [5, 1, 255, 0, 0, 0, 0, 0, 0]
+    },
+    {
+        "name": "Wood Sword",
+        "description": "It's sort of sharp",
+        "data": [6, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 15],
+        "image": "woodsword.png"
+    },
+    {
+        "name": "Wood Pickaxe",
+        "description": "You can mine stone now",
+        "data": [7, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 30],
+        "image": "woodpickaxe.png"
+    },
+    {
+        "name": "Wood Axe",
+        "description": "You can cut down trees faster now",
+        "data": [8, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 20],
+        "image": "woodaxe.png"
+    },
+    {
+        "name": "Stone Sword",
+        "description": "It's sort of sharp",
+        "data": [9, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 10, 2, 20],
+        "image": "stonesword.png"
+    },
+    {
+        "name": "Stone Pickaxe",
+        "description": "You can mine stone now",
+        "data": [10, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 20, 2, 20],
+        "image": "stonepickaxe.png"
+    },
+    {
+        "name": "Stone Axe",
+        "description": "You can cut down trees faster now",
+        "data": [11, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 20, 2, 15],
+        "image": "stoneaxe.png"
+    },
+    {
+        "name": "Wood Wall",
+        "description": "Now you can make a hut",
+        "data": [12, 3, 255, 1, 0, 0, 0, 0, 1, 0, 1, 30],
+        "image": "woodwall.png"
+    },
+    {
+        "name": "Wood Door",
+        "description": "I suppose you do need a way into your hut",
+        "data": [13, 3, 255, 1, 0, 0, 0, 0, 1, 0, 1, 40],
+        "image": "wooddoor.png"
+    },
+    {
+        "name": "Stone Wall",
+        "description": "Now you can make a house",
+        "data": [14, 3, 255, 1, 0, 0, 0, 0, 1, 0, 1, 10, 2, 30],
+        "image": "stonewall.png"
+    },
+    {
+        "name": "Stone Door",
+        "description": "I suppose you do need a way into your house",
+        "data": [15, 3, 255, 1, 0, 0, 0, 0, 1, 0, 1, 10, 2, 40],
+        "image": "stonewall.png"
+    }
+]

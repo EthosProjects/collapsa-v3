@@ -1,0 +1,467 @@
+[
+    {
+        "name": "Stone Hammer",
+        "description": "Did you really just try to break my house down? Not cool, man",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [
+            { "id": 2, "c": 20 },
+            { "id": 1, "c": 15 }
+        ],
+        "output": 1,
+        "image": "stonehammer.png"
+    },
+    {
+        "name": "Stone Shovel",
+        "description": "Dirt :P",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [
+            { "id": 2, "c": 20 },
+            { "id": 1, "c": 15 }
+        ],
+        "output": 1,
+        "image": "stoneshovel.png"
+    },
+    {
+        "name": "Wood Wall",
+        "description": "Now you can make a hut(Not safe from destroyers)",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [{ "id": 1, "c": 20 }],
+        "output": 2,
+        "image": "woodwall.png"
+    },
+    {
+        "name": "Stone Wall",
+        "description": "Now you can make a house(Not safe from destroyers)",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [{ "id": 2, "c": 20 }],
+        "output": 1,
+        "image": "stonewall.png"
+    },
+    {
+        "name": "Wood Floor",
+        "description": "Prevents spawning and looks nice",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [{ "id": 1, "c": 10 }],
+        "output": 4,
+        "image": "woodfloor.png"
+    },
+    {
+        "name": "Stone Floor",
+        "description": "Prevents spawning and has a chiseled look",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [{ "id": 2, "c": 10 }],
+        "output": 4,
+        "image": "stonefloor.png"
+    },
+    {
+        "name": "Crafting Table",
+        "description": "Now you can craft stuff. Hell yeah",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [
+            { "id": 1, "c": 10 },
+            { "id": 2, "c": 10 }
+        ],
+        "output": 1,
+        "image": "craftingtable.png"
+    },
+    {
+        "name": "Wood Door",
+        "description": "Don't you need a way into your hut?",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [
+            { "id": 1, "c": 11 },
+            { "id": 2, "c": 1 },
+            { "id": 3, "c": 1 }
+        ],
+        "output": 2,
+        "image": "wooddoor.png"
+    },
+    {
+        "name": "Stone Door",
+        "description": "Hopefully it doesn't get blocked",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 0,
+        "recipe": [
+            { "id": 1, "c": 1 },
+            { "id": 2, "c": 11 },
+            { "id": 3, "c": 1 }
+        ],
+        "output": 2,
+        "image": "stonedoor.png"
+    },
+    {
+        "name": "Iron Axe",
+        "description": "You could probably kill monsters with this",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 3, "c": 20 },
+            { "id": 2, "c": 10 }
+        ],
+        "output": 1,
+        "image": "ironaxe.png"
+    },
+    {
+        "name": "Iron Pickaxe",
+        "description": "Are you a miner now?",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 3, "c": 20 },
+            { "id": 2, "c": 15 }
+        ],
+        "output": 1,
+        "image": "ironpickaxe.png"
+    },
+    {
+        "name": "Iron Sword",
+        "description": "Woah there, what are you doing with that?",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 3, "c": 10 },
+            { "id": 2, "c": 15 },
+            { "id": 1, "c": 10 }
+        ],
+        "output": 1,
+        "image": "ironsword.png"
+    },
+    {
+        "name": "Iron Hammer",
+        "description": "Why do you need this?",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 3, "c": 20 },
+            { "id": 2, "c": 15 }
+        ],
+        "output": 1,
+        "image": "ironhammer.png"
+    },
+    {
+        "name": "Iron Shovel",
+        "description": "You could make a dirt hut with this :)",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 3, "c": 20 },
+            { "id": 2, "c": 15 }
+        ],
+        "output": 1,
+        "image": "ironshovel.png"
+    },
+    {
+        "name": "Gold Axe",
+        "description": "Woah. That's a lot of wood",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 4, "c": 20 },
+            { "id": 3, "c": 10 }
+        ],
+        "output": 1,
+        "image": "goldaxe.png"
+    },
+    {
+        "name": "Gold Pickaxe",
+        "description": "Why do you even need this? Skip to diamond",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 4, "c": 20 },
+            { "id": 3, "c": 15 }
+        ],
+        "output": 1,
+        "image": "goldpickaxe.png"
+    },
+    {
+        "name": "Gold Sword",
+        "description": "Incredible. It's like it was made for killing demons",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 4, "c": 10 },
+            { "id": 3, "c": 15 },
+            { "id": 2, "c": 10 }
+        ],
+        "output": 1,
+        "image": "goldsword.png"
+    },
+    {
+        "name": "Stone Axe",
+        "description": "Basic Axe for quicker wood gain",
+        "data": [6, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 5, 2, 5],
+        "image": "stoneaxe.png"
+    },
+    {
+        "name": "Stone Pickaxe",
+        "description": "Holy cow! Now, you can mine this grey stuff",
+        "data": [7, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 10, 2, 5],
+        "image": "stonepickaxe.png"
+    },
+    {
+        "name": "Stone Sword",
+        "description": "Made for killing, not very strong",
+        "data": [8, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 5, 2, 10],
+        "image": "stonesword.png"
+    },
+    {
+        "name": "Stone Hammer",
+        "description": "Did you really just try to break my house down? Not cool, man",
+        "data": [9, 2, 1, 1, 0, 0, 0, 0, 1, 0, 1, 20, 2, 15],
+        "image": "stonehammer.png"
+    },
+    {
+        "name": "Gold Hammer",
+        "description": "Seriously?",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 4, "c": 20 },
+            { "id": 3, "c": 15 }
+        ],
+        "output": 1,
+        "image": "goldhammer.png"
+    },
+    {
+        "name": "Diamond Axe",
+        "description": "So much wood OMG",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 5, "c": 20 },
+            { "id": 3, "c": 10 }
+        ],
+        "output": 1,
+        "image": "diamondaxe.png"
+    },
+    {
+        "name": "Diamond Pickaxe",
+        "description": "Do I even need to say it? :D",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 5, "c": 20 },
+            { "id": 3, "c": 15 }
+        ],
+        "output": 1,
+        "image": "diamondpickaxe.png"
+    },
+    {
+        "name": "Diamond Sword",
+        "description": "Hey wait what are you doing with that",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 5, "c": 10 },
+            { "id": 3, "c": 15 },
+            { "id": 4, "c": 10 }
+        ],
+        "output": 1,
+        "image": "diamondsword.png"
+    },
+    {
+        "name": "Diamond Hammer",
+        "description": "This is overkill, griefer",
+        "type": 10,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 5, "c": 20 },
+            { "id": 3, "c": 15 }
+        ],
+        "output": 1,
+        "image": "diamondhammer.png"
+    },
+    {
+        "name": "Iron Wall",
+        "description": "Are you making a base, or a bunker?",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [{ "id": 3, "c": 20 }],
+        "output": 1,
+        "image": "ironwall.png"
+    },
+    {
+        "name": "Chest",
+        "description": "Store stuff IG",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 1, "c": 50 },
+            { "id": 4, "c": 10 }
+        ],
+        "output": 1,
+        "image": "chest.png"
+    },
+    {
+        "name": "Iron Armor",
+        "description": "Slows you down, but protects you",
+        "type": 100,
+        "placeable": 0,
+        "edible": 0,
+        "amorable": 1,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [{ "id": 3, "c": 20 }],
+        "output": 1,
+        "image": "ironarmor.png"
+    },
+    {
+        "name": "Campfire",
+        "description": "Ooooh warm :)",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 1,
+        "needstable": 1,
+        "recipe": [
+            { "id": 1, "c": 2 },
+            { "id": 2, "c": 10 }
+        ],
+        "output": 1,
+        "image": "campfire.png"
+    },
+    {
+        "name": "CarrotFarm",
+        "description": "Yummy. Attracts Rabbits",
+        "type": 11,
+        "placeable": 1,
+        "edible": 0,
+        "amorable": 0,
+        "hatable": 0,
+        "craftable": 0,
+        "needstable": 0,
+        "image": "carrotfarm.png"
+    }
+]

@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+}
+
+:root {
+  font-size: calc(10px + 1vh);
+  font-family: Sans, Arial;
+}
+
+input:focus, select:focus,
+textarea:focus, button:focus {
+  outline: none;
+}
+
+.modal-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #474e5d;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+}
+.modal-container .modal {
+  border: 5px #521c18 solid;
+  background-color: #ba723b;
+  box-sizing: content-box;
+}
+.modal-container .modal .modalInputLabel {
+  text-align: left;
+  display: block;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.modal-container #enterGameModal {
+  border-radius: 25px;
+  position: absolute;
+  top: 40%;
+  left: 37.5%;
+  width: calc(25% - 5px);
+  /* Could be more or less, depending on screen size */
+}
+.modal-container #enterGameModal #enterGameHeader {
+  text-align: center;
+}
+.modal-container #enterGameModal #enterGameUsernameInputLabel {
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 10px;
+}
+.modal-container #enterGameModal #enterGameUsernameInputLabel #enterGameUsernameInput {
+  text-align: center;
+  padding: 10px;
+  width: 90%;
+  border-radius: 5px;
+  border: none;
+}
+
+/*# sourceMappingURL=main.css.map */

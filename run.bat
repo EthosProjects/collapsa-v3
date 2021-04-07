@@ -1,0 +1,3 @@
+env.bat
+node .
+PAUSE
