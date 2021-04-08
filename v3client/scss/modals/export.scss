@@ -1,0 +1,22 @@
+@use './enterGame.scss';
+.modal-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: #474e5d;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    .modal {
+        border: 5px #521c18 solid;
+        background-color: #ba723b;
+        box-sizing: content-box;
+        .modalInputLabel {
+            text-align: left;
+            display: block;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+    }
+}

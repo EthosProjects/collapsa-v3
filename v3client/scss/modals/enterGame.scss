@@ -1,0 +1,48 @@
+.modal-container {
+    #enterGameModal {
+        border-radius: 25px;
+        position: absolute;
+        top: 40%;
+        left: 37.5%;
+        width: calc(25% - 5px); /* Could be more or less, depending on screen size */
+        #enterGameHeader {
+            text-align: center;
+        }
+        label {
+            margin-left: 10%;
+            input,
+            select {
+                border: none;
+                padding: 10px;
+                border-radius: 5px;
+                margin: 0px;
+            }
+        }
+        #enterGameUsernameInputLabel {
+            margin-bottom: 10px;
+            #enterGameUsernameInput {
+                text-align: center;
+                width: 90%;
+            }
+        }
+        #enterGameServerSelectLabel {
+            float: left;
+            text-align: left;
+            margin-right: 10px;
+            margin-bottom: 20px;
+            width: calc(60% - 5px);
+            #enterGameServerSelect {
+                width: 100%;
+            }
+        }
+        #enterGameSubmit {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            float: left;
+            width: calc(20% - 1px);
+            font: 13px Helvetica, Arial;
+            border: none;
+        }
+    }
+}

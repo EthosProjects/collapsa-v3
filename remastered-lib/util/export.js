@@ -43,7 +43,7 @@ export const JSONtoString = (obj, currIndent = 1, depthLimit = 15) => {
         return ret + new Array(currIndent - 1).fill('    ').join('') + '}';
     }
 };
-export { default as LeaderboardMethods } from './LeaderboardMethods.js';
-export { default as StorageMethods } from './StorageMethods.js';
+//export { default as LeaderboardMethods } from './LeaderboardMethods.js';
+//export { default as StorageMethods } from './StorageMethods.js';
 export { default as timerToString } from './timerToString.js';
 export const toLiteral = (obj) => JSON.parse(JSON.stringify(obj));

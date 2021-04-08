@@ -71,7 +71,7 @@ mongoDB.on('ready', () => {
     collapsauserbase = collapsa.collections.get('collapsauserbase');
 });
 //Game Stuff
-import { Game } from './remastered-lib/v3Game.js';
+import { Game } from './v3lib/Game.js';
 new Game('usaeast1');
 //Server Routing
 app.use(express.json());

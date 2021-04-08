@@ -19,6 +19,6 @@ const genSnowflake = (processID, workerID) => {
         increment = zeroFill(process.reqCount, 12);
     processID = zeroFill(processID, 5);
     workerID = zeroFill(workerID, 5);
-    return BigInt(parseInt(timestamp + processID + workerID + increment, 2)).toString();
+    return BigInt('0b' + timestamp + processID + workerID + increment, 2).toString();
 };
 export default genSnowflake;

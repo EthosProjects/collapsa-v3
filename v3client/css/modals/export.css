@@ -70,20 +70,4 @@
     margin-bottom: 30px;
 }
 
-body {
-    margin: 0;
-}
-
-:root {
-    font-size: calc(10px + 1vh);
-    font-family: Sans, Arial;
-}
-
-input:focus,
-select:focus,
-textarea:focus,
-button:focus {
-    outline: none;
-}
-
-/*# sourceMappingURL=main.css.map */
+/*# sourceMappingURL=export.css.map */

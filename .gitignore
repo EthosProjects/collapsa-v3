@@ -238,14 +238,13 @@ _Pvt_Extensions
 
 # Custom
 env.bat
-native
+native/initializeEnvironment
 astar
 build
 client
 collapsabot/
 encryption
 lib
-shared
 door.js
 Entity.js
 6F9D27092977772A3446C83947719A04.txt

@@ -1,7 +1,12 @@
 import WebSocket from 'ws';
 import { Reader, Writer } from '../shared/v3binlingo.js';
+import { bindToClass, bindInstanceToNative } from '../native/export.js';
 export class Game {
     constructor(link) {
+        this.address = 0x00000000;
+        console.log(this.address);
+        bindInstanceToNative(this);
+        console.log(this.address);
         //this.qtree = new QuadTree([0, 0, constants.MAP.WIDTH, constants.MAP.HEIGHT], this);
         this.wss = new WebSocket.Server({ server: global.hServer, path: '/games/' + link });
         this.wss.on('listening', () => {
@@ -40,3 +45,5 @@ export class Game {
         }, 30000);
     }
 }
+bindToClass(Game);
+console.log(Game.prototype['red']);

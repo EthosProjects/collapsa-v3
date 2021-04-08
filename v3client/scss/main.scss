@@ -1,3 +1,4 @@
+@use './modals/export.scss';
 body {
     margin: 0;
 }
@@ -10,71 +11,4 @@ select:focus,
 textarea:focus,
 button:focus {
     outline: none;
-}
-.modal-container {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: #474e5d;
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    .modal {
-        border: 5px #521c18 solid;
-        background-color: #ba723b;
-        box-sizing: content-box;
-        .modalInputLabel {
-            text-align: left;
-            display: block;
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-    }
-    #enterGameModal {
-        border-radius: 25px;
-        position: absolute;
-        top: 40%;
-        left: 37.5%;
-        width: calc(25% - 5px); /* Could be more or less, depending on screen size */
-        #enterGameHeader {
-            text-align: center;
-        }
-        label {
-            margin-left: 10%;
-            input,
-            select {
-                border: none;
-                padding: 10px;
-                border-radius: 5px;
-                margin: 0px;
-            }
-        }
-        #enterGameUsernameInputLabel {
-            margin-bottom: 10px;
-            #enterGameUsernameInput {
-                text-align: center;
-                width: 90%;
-            }
-        }
-        #enterGameServerSelectLabel {
-            float: left;
-            text-align: left;
-            margin-right: 10px;
-            margin-bottom: 20px;
-            width: calc(60% - 5px);
-            #enterGameServerSelect {
-                width: 100%;
-            }
-        }
-        #enterGameSubmit {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            float: left;
-            width: calc(20% - 1px);
-            font: 13px Helvetica, Arial;
-            border: none;
-        }
-    }
 }

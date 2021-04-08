@@ -46,44 +46,4 @@
     border: none;
 }
 
-.modal-container {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: #474e5d;
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    left: 0;
-    top: 0;
-}
-.modal-container .modal {
-    border: 5px #521c18 solid;
-    background-color: #ba723b;
-    box-sizing: content-box;
-}
-.modal-container .modal .modalInputLabel {
-    text-align: left;
-    display: block;
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-
-body {
-    margin: 0;
-}
-
-:root {
-    font-size: calc(10px + 1vh);
-    font-family: Sans, Arial;
-}
-
-input:focus,
-select:focus,
-textarea:focus,
-button:focus {
-    outline: none;
-}
-
-/*# sourceMappingURL=main.css.map */
+/*# sourceMappingURL=enterGame.css.map */
