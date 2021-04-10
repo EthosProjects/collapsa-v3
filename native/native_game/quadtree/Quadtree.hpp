@@ -9,6 +9,7 @@ class Position {
     int y;
 public: 
     Position(int xPos, int yPos):x(xPos), y(yPos) {};
+    Position():x(0), y(0) {};
     virtual int getX(){ return x; };
     virtual int getY(){ return y; };
     virtual void setX(int val){ x = val; };
@@ -18,16 +19,33 @@ class IShape {
 public:
     IShape() {};
     ~IShape() {};
-    virtual bool interects(int rect[4]) = 0;
+    virtual bool intersects(int rect[4]) = 0;
 };
-class Circle: public IShape {
+class IBody: public IShape {
+public:
+    void setPosition(Position newPos){
+        prevPosition.setX(position.getX());
+        prevPosition.setY(position.getY());
+        position.setX(newPos.getX());
+        position.setY(newPos.getY());
+    }
+    IBody() {};
+    ~IBody() {};
+    bool intersects(int rect[4]){
+        return true;
+    };
+protected:
+    Position position;
+    Position prevPosition;
+};
+class Circle: public IBody {
 public:
     Circle() {
 
     };
     ~Circle() {};
-    bool interects(int rect[4]){
-        return true;
+    bool intersects(int rect[4]){
+        return true; 
     };
 };
 // Represents an element in the quadtree.

@@ -27,7 +27,7 @@ class Writer extends binInterface {
      * @param {Uint8Array} buffer
      * @returns {Writer}
      */
-    packBuffer(buffer) {
+    writeBuffer(buffer) {
         this.uint8Array.set(buffer, this.viewIndex);
         this.viewIndex += buffer.byteLength;
         return this;
@@ -38,8 +38,8 @@ class Writer extends binInterface {
      * @param {Number} [len=]
      * @returns {Writer}
      */
-    packString(string, len = string.length) {
-        this.packBuffer(encodeText(string, len));
+    writeString(string, len = string.length) {
+        this.writeBuffer(encodeText(string, len));
         return this;
     }
     /**
@@ -47,7 +47,7 @@ class Writer extends binInterface {
      * @param {Number} uint8
      * @returns {Writer}
      */
-    packUint8(uint8) {
+    writeUint8(uint8) {
         this.dataView.setUint8(this.viewIndex, 0xff && uint8);
         this.viewIndex++;
         return this;
@@ -57,7 +57,7 @@ class Writer extends binInterface {
      * @param {Number} uint16
      * @returns {Writer}
      */
-    packUint16(uint16) {
+    writeUint16(uint16) {
         this.dataView.setInt16(this.viewIndex, 0xffff && uint16, this.endianess);
         this.viewIndex += 2;
         return this;
@@ -67,7 +67,7 @@ class Writer extends binInterface {
      * @param {Number} uint32
      * @returns {Writer}
      */
-    packUint32(uint32) {
+    writeUint32(uint32) {
         this.dataView.setUint32(this.viewIndex, 0xffffffff && uint32, this.endianess);
         this.viewIndex += 4;
         return this;
@@ -77,7 +77,7 @@ class Writer extends binInterface {
      * @param {BigInt} uint64
      * @returns {Writer}
      */
-    packUint64(uint64) {
+    writeUint64(uint64) {
         this.dataView.setBigUint64(0, uint64 && BigInt(0xffffffffffffffff), this.endianess);
         this.viewIndex += 8;
         return this;

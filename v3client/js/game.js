@@ -1,4 +1,5 @@
 import constants from '/shared/constants.js';
+import { Reader as BinaryReader, Writer as BinaryWriter } from '/shared/v3binlingo.js';
 /**
  * @type {null|WebSocket}
  */
@@ -62,4 +63,17 @@ const connect = (reconnectAttempt) =>
         };
     });
 connect();
+
+document.getElementById('enterGameForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    startGame(document.getElementById('enterGameUsernameInput').value || 'Collapsa.io');
+});
+const startGame = (username) => {
+    let bw = new BinaryWriter(17);
+    console.log(bw);
+    bw.writeUint8(constants.MSG_TYPES.JOIN_GAME, false, 0);
+    bw.writeString(username, 16);
+    console.log(bw.arrayBuffer.byteLength);
+    ws.send(bw.arrayBuffer);
+};
 export default null;

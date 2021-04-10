@@ -10,7 +10,6 @@ Quadtree::Quadtree(int x, int y, int w, int h) {
     nodes = std::vector<QuadNode>();
 };
 void Quadtree::insert(IShape &shape){
-    if(shape.interects(root_rect)){
-        std::cout << "Poggers" << std::endl;
-    }
+    if(!shape.intersects(root_rect)) return;
+    std::cout << "Adding Circle to tree" << std::endl;
 };
