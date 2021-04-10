@@ -10,6 +10,9 @@
 #include <chrono>
 #include <thread>
 #include <cstdint>
+class OutputMessage {
+
+};
 class Message {
 public:
     uint8_t * data;
@@ -19,9 +22,11 @@ public:
 class Game {
     std::atomic<bool> m_running;
     std::vector<Message*> m_p_inputMessages;
+    std::mutex m_p_inputMessages_mutex;
     std::thread m_loopThread;
     Player * m_Players[255];
 public:
+    int playerCount;
     Game(Napi::Object t_gameObject, Napi::Env t_env); 
     ~Game(){
         std::cout << "Game destroyed" << std::endl;
@@ -32,7 +37,6 @@ public:
     Napi::Value addMessage(const Napi::CallbackInfo& info);
     void readMessages();
     void update();
-    void sendMessages();
     void startLoop();
     void stopLoop();
     void loop();
