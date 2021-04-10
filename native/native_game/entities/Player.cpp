@@ -7,9 +7,7 @@ void Player::Export(Napi::Env env, Napi::Object exports) {
     playerExport.Set("bindInstanceToNative", Napi::Function::New(env, Player::BindInstanceToNative));
     exports.Set("NativePlayer", playerExport);
 }
-Player::Player(Game * gamePointer): Entity(Position(30, 40), HealthOptions(30, 40), gamePointer) {
-    game->PrintValue("help");
-};
+Player::Player(Game * gamePointer): Entity(Position(30, 40), HealthOptions(30, 40), gamePointer) {};
 Napi::Value Player::BindClassToNative(const Napi::CallbackInfo & info){
     Napi::Env env = info.Env();
     info[0].As<Napi::Object>().Get("prototype").As<Napi::Object>().Set("NativeBound", Napi::Boolean::New(env, 0));

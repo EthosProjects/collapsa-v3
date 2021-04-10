@@ -21,33 +21,33 @@ public:
     HealthOptions(int min, int max):minimum(min), maximum(max) {}
 };
 class HealthController {
-    int minimum;
-    int maximum;
-    int value;
+    int m_maximum;
+    int m_minimum;
+    int m_value;
 public:
-    void setHealth(int newHealth){
-        newHealth = std::min(newHealth, maximum);
-        newHealth = std::max(newHealth, minimum);
-        value = newHealth;
+    void setHealth(int t_health){
+        t_health = std::min(t_health, m_maximum);
+        t_health = std::max(t_health, m_minimum);
+        m_value = t_health;
     }
-    int getHealth(){ return value; };
+    int getHealth(){ return m_value; };
     HealthController(HealthOptions healthOpts){
-        minimum = healthOpts.minimum;
-        maximum = healthOpts.maximum;
+        m_maximum = healthOpts.maximum;
+        m_minimum = healthOpts.minimum;
     };
 };
 class Entity {
 protected:
-    HealthController health;
-    IBody body;
+    HealthController m_health;
+    IBody m_body;
 protected:
-    Game * game;
+    Game * m_p_game;
 public:
-    Entity(Position initialPosition, HealthOptions healthOpts, Game * gamePointer): 
-        health(healthOpts), 
-        game(gamePointer)
+    Entity(Position t_position, HealthOptions t_healthOptions, Game * t_p_game): 
+        m_health(t_healthOptions), 
+        m_p_game(t_p_game)
     {
-        body.setPosition(initialPosition);
+        m_body.setPosition(t_position);
         //game->PrintValue("help");
     };
 };

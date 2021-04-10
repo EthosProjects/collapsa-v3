@@ -4,8 +4,12 @@
 //#include "../native_emitter/NativeEmitter.hpp"
 #include "quadtree/Quadtree.hpp"
 #include "entities/Player.hpp"
+#include "constants.hpp"
 #include <iostream>
+#include <ctime>
+#include <chrono>
 #include <thread>
+#include <cstdint>
 class Message {
 public:
     uint8_t * data;
@@ -13,30 +17,24 @@ public:
     Message(uint8_t * message, Napi::Object socketLoad): data(message), socket(socketLoad){};
 };
 class Game {
-    std::atomic<bool> running;
-    Player * Players[255];
-    std::vector<Message*> messages;
-    std::thread loopThread;
-    Napi::Object gameObject;
+    std::atomic<bool> m_running;
+    std::vector<Message*> m_p_inputMessages;
+    std::thread m_loopThread;
+    Player * m_Players[255];
 public:
-    Game(Napi::Object gameObj, Napi::Env env); 
+    Game(Napi::Object t_gameObject, Napi::Env t_env); 
     ~Game(){
         std::cout << "Game destroyed" << std::endl;
     }
-    static Napi::Function* pConstructor;
-    static void Export(Napi::Env env, Napi::Object exports);
-    static Napi::Value BindClassToNative(const Napi::CallbackInfo& info);
-    static Napi::Value BindInstanceToNative(const Napi::CallbackInfo& info);
-    Napi::Value AddMessage(const Napi::CallbackInfo& info);
-    void ReadMessages();
-    void Update();
-    void SendMessages();
+    static void exportMethods(Napi::Env env, Napi::Object exports);
+    static Napi::Value bindClassToNative(const Napi::CallbackInfo& info);
+    static Napi::Value bindInstanceToNative(const Napi::CallbackInfo& info);
+    Napi::Value addMessage(const Napi::CallbackInfo& info);
+    void readMessages();
+    void update();
+    void sendMessages();
     void startLoop();
     void stopLoop();
     void loop();
-    Napi::Value KillPlayer(const Napi::CallbackInfo& info);
-    void PrintValue(std::string str){
-        std::cout << str << std::endl;
-    };
     Quadtree qtree;
 };

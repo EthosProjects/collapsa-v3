@@ -1,29 +1,23 @@
 #include "Game.hpp"
-#include <iostream>
-#include <ctime>
-#include <chrono>
-#include <thread>
-#include "constants.hpp"
-Napi::Function * Game::pConstructor = nullptr;
-void Game::Export(Napi::Env env, Napi::Object exports) {
+
+void Game::exportMethods(Napi::Env env, Napi::Object exports) {
     Napi::Object gameExport = Napi::Object::New(env);
-    gameExport.Set("bindClassToNative", Napi::Function::New(env, Game::BindClassToNative));
-    gameExport.Set("bindInstanceToNative", Napi::Function::New(env, Game::BindInstanceToNative));
+    gameExport.Set("bindClassToNative", Napi::Function::New(env, Game::bindClassToNative));
+    gameExport.Set("bindInstanceToNative", Napi::Function::New(env, Game::bindInstanceToNative));
     exports.Set("NativeGame", gameExport);
 }
-Napi::Value Game::BindClassToNative(const Napi::CallbackInfo & info){
+Napi::Value Game::bindClassToNative(const Napi::CallbackInfo & info){
     Napi::Env env = info.Env();
     info[0].As<Napi::Object>().Get("prototype").As<Napi::Object>().Set("NativeBound", Napi::Boolean::New(env, 0));
-    Game::pConstructor = &info[0].As<Napi::Function>();
     return env.Undefined();
 }
-Napi::Value Game::BindInstanceToNative(const Napi::CallbackInfo & info){
+Napi::Value Game::bindInstanceToNative(const Napi::CallbackInfo & info){
     Napi::Env env = info.Env();
     Napi::Object gameObj = info[0].As<Napi::Object>();
     Game * game = new Game(gameObj, env);
     return env.Undefined();
 }
-Napi::Value Game::AddMessage(const Napi::CallbackInfo & info){
+Napi::Value Game::addMessage(const Napi::CallbackInfo & info){
     Napi::Env env = info.Env();
     if (!info[0].IsArrayBuffer()) {
         Napi::Error::New(info.Env(), "Expected a Buffer").ThrowAsJavaScriptException();
@@ -35,33 +29,29 @@ Napi::Value Game::AddMessage(const Napi::CallbackInfo & info){
     }
     Napi::ArrayBuffer message = info[0].As<Napi::ArrayBuffer>();
     Napi::Object socket = info[1].As<Napi::Object>();
-    messages.push_back(new Message(reinterpret_cast<uint8_t*>(message.Data()), socket));
+    m_p_inputMessages.push_back(new Message(reinterpret_cast<uint8_t*>(message.Data()), socket));
+    std::cout << "Reading Message" << std::endl;
     return env.Undefined();
 };
 void Game::loop(){
-    while(running){
-        ReadMessages();
-        Update();
-        SendMessages();
+    while(m_running){
+        readMessages();
+        update();
+        sendMessages();
     }
     std::cout << "Terminated Game loop" << std::endl;
     return;
 };
-void Game::startLoop(){ loopThread = std::thread(&Game::loop, this); };
-void Game::stopLoop(){ running = false; loopThread.join();};
-void Game::ReadMessages(){};
-void Game::Update(){};
-void Game::SendMessages(){
-    for(std::vector<Message*>::iterator ppMessage = messages.begin(); ppMessage < messages.end(); ppMessage++){
+void Game::startLoop(){ m_running = true; m_loopThread = std::thread(&Game::loop, this); };
+void Game::stopLoop(){ m_running = false; m_loopThread.join();};
+void Game::readMessages(){};
+void Game::update(){};
+void Game::sendMessages(){
+    for(std::vector<Message*>::iterator ppMessage = m_p_inputMessages.begin(); ppMessage < m_p_inputMessages.end(); ppMessage++){
         Message* pMessage = *ppMessage;
         switch(pMessage->data[0]) {
             case constants::MSG_TYPES::JOIN_GAME: {
                 std::cout << "Processing join game message" << std::endl;
-                if (Player::pConstructor == nullptr) break;
-                Napi::Object playerObj = Player::pConstructor->Call({}).As<Napi::Object>();
-                bool lossless;
-                Player player = *(Player*) playerObj.Get("address").As<Napi::BigInt>().Int64Value(&lossless);
-                if(!lossless) std::cout << "Failed to create player" << std::endl;
                 std::cout << "Processed join game message"<< std::endl;
                 break;
             }
@@ -72,19 +62,12 @@ void Game::SendMessages(){
         std::cout << "Processed message" << std::endl;
         delete pMessage;
     }
-    messages.clear();
+    m_p_inputMessages.clear();
 };
-Game::Game(Napi::Object gameObj, Napi::Env env): gameObject(gameObj), qtree(4, 5, 6, 5) {
-    for(size_t i = 0; i < 255; i++) Players[i] = nullptr;
-    auto fp = std::bind(&Game::AddMessage, this, std::placeholders::_1);
-    gameObj.Set("address", Napi::Number::New(env, (int) this));
-    gameObj.Set("addMessage", Napi::Function::New(env, fp));
-    running = true;
+Game::Game(Napi::Object gameObject, Napi::Env env): qtree(4, 5, 6, 5) {
+    for(size_t i = 0; i < 255; i++) m_Players[i] = nullptr;
+    auto fp = std::bind(&Game::addMessage, this, std::placeholders::_1);
+    gameObject.Set("address", Napi::Number::New(env, (int) this));
+    gameObject.Set("addMessage", Napi::Function::New(env, fp));
     startLoop();
-    //std::this_thread::sleep_for(std::chrono::seconds());
-    //stopLoop();
-    /*
-    Players[0] = new Player(this);
-    Circle circ = Circle();
-    qtree.insert(circ);*/
 };

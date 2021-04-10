@@ -3,7 +3,6 @@ import WebSocket from 'ws';
 import { Reader, Writer } from '../shared/v3binlingo.js';
 import { NativeGame } from '../native/export.js';
 import { v4 } from 'uuid';
-import Player from './entities/Player.js';
 export class Game {
     constructor(link) {
         this.address = 0x00000000;
