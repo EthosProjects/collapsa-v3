@@ -37,7 +37,7 @@ export class Game {
             const binaryPacker = new Writer(37).writeUint8(constants.MSG_TYPES.SOCKET_ID).writeString(socketID);
             socket.send(binaryPacker.arrayBuffer);
             socket.id = socketID;
-            socket.on('message', (m) => this.addMessage(new Uint8Array(m).buffer, socket));
+            socket.on('message', (m) => this.writeMessage(new Uint8Array(m).buffer, socket));
         });
         const pingPong = setInterval(() => {
             this.wss.clients.forEach((ws) => {
@@ -46,6 +46,14 @@ export class Game {
                 ws.ping();
             });
         }, 30000);
+        setInterval(() => {
+            /**
+             * @type {ArrayBuffer[]}
+             */
+            const messages = this.getMessages();
+            if (messages.length == 0) return;
+            console.log(messages);
+        });
     }
 }
 NativeGame.bindClassToNative(Game);

@@ -17,7 +17,7 @@ Napi::Value Game::bindInstanceToNative(const Napi::CallbackInfo & info){
     Game * game = new Game(gameObj, env);
     return env.Undefined();
 }
-Napi::Value Game::addMessage(const Napi::CallbackInfo & info){
+Napi::Value Game::writeMessage(const Napi::CallbackInfo & info){
     Napi::Env env = info.Env();
     if (!info[0].IsArrayBuffer()) {
         Napi::Error::New(info.Env(), "Expected a Buffer").ThrowAsJavaScriptException();
@@ -28,14 +28,28 @@ Napi::Value Game::addMessage(const Napi::CallbackInfo & info){
         return info.Env().Undefined();
     }
     Napi::ArrayBuffer message = info[0].As<Napi::ArrayBuffer>();
-    Napi::Object socket = info[1].As<Napi::Object>();
-    std::cout << (std::string) socket.Get("id").As<Napi::String>() << "Socket.id" << std::endl;
     m_p_inputMessages_mutex.lock();
-    m_p_inputMessages.push_back(new Message(reinterpret_cast<uint8_t*>(message.Data()), socket));
+    m_p_inputMessages.push_back(new InputMessage(
+        reinterpret_cast<uint8_t*>(message.Data()), 
+        (std::string) info[1].As<Napi::Object>().Get("id").As<Napi::String>()
+    ));
     m_p_inputMessages_mutex.unlock();
-    std::cout << "Reading Message" << std::endl;
+    //std::cout << "Reading Message" << std::endl;
     return env.Undefined();
 };
+Napi::Value Game::getMessages(const Napi::CallbackInfo& info){
+    Napi::Env env = info.Env();
+    Napi::Array buffArray = Napi::Array::New(env, m_p_outputMessages.size()).As<Napi::Array>();
+    m_p_outputMessages_mutex.lock();
+    unsigned int i = 0;
+    for(OutputMessage* ppOutputMessage: m_p_outputMessages){
+        buffArray[i] = Napi::ArrayBuffer::New(env, (void*) ppOutputMessage->data, ppOutputMessage->dataLength);
+        ++i;
+    }
+    m_p_outputMessages.clear();
+    m_p_outputMessages_mutex.unlock();
+    return buffArray;
+}
 void Game::loop(){
     while(m_running){
         readMessages();
@@ -48,24 +62,28 @@ void Game::startLoop(){ m_running = true; m_loopThread = std::thread(&Game::loop
 void Game::stopLoop(){ m_running = false; m_loopThread.join();};
 void Game::readMessages(){
     m_p_inputMessages_mutex.lock();
-    for(std::vector<Message*>::iterator ppMessage = m_p_inputMessages.begin(); ppMessage < m_p_inputMessages.end(); ppMessage++){
-        Message* pMessage = *ppMessage;
+    for(std::vector<InputMessage*>::iterator ppMessage = m_p_inputMessages.begin(); ppMessage < m_p_inputMessages.end(); ppMessage++){
+        InputMessage* pMessage = *ppMessage;
+        std::cout << "Processing message" << std::endl;
         switch(pMessage->data[0]) {
             case constants::MSG_TYPES::JOIN_GAME: {
                 std::cout << "Processing join game message" << std::endl;
                 if(playerCount == constants::PLAYER::LIMIT){
+                    //Create a "Game full message"
                     break;
                 }
                 size_t i = 0;
                 while(i < constants::PLAYER::LIMIT){
-                    if(m_Players[i] == nullptr){
-                        std::cout << m_Players[i] << std::endl;
-                        break;
-                    }
+                    if(m_Players[i] == nullptr) break;
                     ++i;
                 };
-                m_Players[i] = new Player(this);
+                m_Players[i] = new Player(this, pMessage->socketid);
+                this->m_p_socketPlayerMap[pMessage->socketid] = m_Players[i];
                 playerCount++;
+                OutputMessage *newPlayerMessage = new OutputMessage{ new uint8_t[3], pMessage->socketid, 3 };
+                m_p_outputMessages_mutex.lock();
+                m_p_outputMessages.push_back(newPlayerMessage);
+                m_p_outputMessages_mutex.unlock();
                 break;
             }
             default: {
@@ -85,8 +103,8 @@ Game::Game(Napi::Object gameObject, Napi::Env env):
 {
     for(size_t i = 0; i < 255; i++) m_Players[i] = nullptr;
     std::cout << (m_Players[0] != nullptr) << std::endl;
-    auto fp = std::bind(&Game::addMessage, this, std::placeholders::_1);
     gameObject.Set("address", Napi::Number::New(env, (int) this));
-    gameObject.Set("addMessage", Napi::Function::New(env, fp));
+    gameObject.Set("writeMessage", Napi::Function::New(env, [this](Napi::CallbackInfo& info){ return writeMessage(info); }));
+    gameObject.Set("getMessages", Napi::Function::New(env, [this](Napi::CallbackInfo& info){ return getMessages(info); }));
     startLoop();
 };

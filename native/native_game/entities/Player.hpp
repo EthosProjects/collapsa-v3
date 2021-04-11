@@ -3,6 +3,7 @@
 #include "../../../node_modules/node-addon-api/napi.h"
 class Circle;
 class Player: public Entity {
+    std::string m_socketid;
 public:
-    Player(Game * gamePointer);
+    Player(Game*, std::string);
 };

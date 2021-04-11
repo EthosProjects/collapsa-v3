@@ -43,7 +43,7 @@ protected:
 protected:
     Game * m_p_game;
 public:
-    Entity(Position t_position, HealthOptions t_healthOptions, Game * t_p_game): 
+    Entity(Position t_position, HealthOptions t_healthOptions, Game* t_p_game): 
         m_health(t_healthOptions), 
         m_p_game(t_p_game)
     {

@@ -3,17 +3,16 @@
 struct QuadNode{
     int32_t first_child;
 };
-
 class Position {
-    int x;
-    int y;
+    int m_x;
+    int m_y;
 public: 
-    Position(int xPos, int yPos):x(xPos), y(yPos) {};
-    Position():x(0), y(0) {};
-    virtual int getX(){ return x; };
-    virtual int getY(){ return y; };
-    virtual void setX(int val){ x = val; };
-    virtual void setY(int val){ y = val; };
+    Position(int t_x, int t_y):m_x(t_x), m_y(t_y) {};
+    Position():m_x(0), m_y(0) {};
+    virtual int getX(){ return m_x; };
+    virtual int getY(){ return m_y; };
+    virtual void setX(int val){ m_x = val; };
+    virtual void setY(int val){ m_y = val; };
 };
 class IShape {
 public:
