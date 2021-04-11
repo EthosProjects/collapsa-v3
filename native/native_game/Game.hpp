@@ -1,16 +1,10 @@
 #pragma once
-#include "../../node_modules/node-addon-api/napi.h"
+#include "napi.h"
 #include <string>
 //#include "../native_emitter/NativeEmitter.hpp"
 #include "quadtree/Quadtree.hpp"
 #include "entities/Player.hpp"
 #include "constants.hpp"
-#include <iostream>
-#include <ctime>
-#include <chrono>
-#include <thread>
-#include <cstdint>
-#include <map>
 namespace Collapsa {
     class OutputMessage {
     public:
@@ -36,7 +30,8 @@ namespace Collapsa {
         std::mutex m_p_outputMessages_mutex;
         std::map<std::string, Player*> m_p_socketPlayerMap;
         std::thread m_loopThread;
-        Player * m_Players[255];
+        Player * m_Players[constants::PLAYER::LIMIT];
+        Entity * m_entities[constants::PLAYER::LIMIT];
     public:
         int playerCount;
         Game(Napi::Object t_gameObject, Napi::Env t_env); 
