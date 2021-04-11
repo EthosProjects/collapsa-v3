@@ -1,5 +1,6 @@
 #pragma once
 #include "FreeList.hpp"
+#include <cstdint>
 struct QuadNode{
     int32_t first_child;
 };

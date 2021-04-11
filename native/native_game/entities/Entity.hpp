@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <algorithm>
-class Game;
+namespace Collapsa {
+    class Game;
+}
 #include "../quadtree/Quadtree.hpp"
 class Damage {
     int16_t type;
@@ -36,18 +38,20 @@ public:
         m_minimum = healthOpts.minimum;
     };
 };
-class Entity {
-protected:
-    HealthController m_health;
-    IBody m_body;
-protected:
-    Game * m_p_game;
-public:
-    Entity(Position t_position, HealthOptions t_healthOptions, Game* t_p_game): 
-        m_health(t_healthOptions), 
-        m_p_game(t_p_game)
-    {
-        m_body.setPosition(t_position);
-        //game->PrintValue("help");
+namespace Collapsa {
+    class Entity {
+    protected:
+        HealthController m_health;
+        IBody m_body;
+    protected:
+        Game * m_p_game;
+    public:
+        Entity(Position t_position, HealthOptions t_healthOptions, Game* t_p_game): 
+            m_health(t_healthOptions), 
+            m_p_game(t_p_game)
+        {
+            m_body.setPosition(t_position);
+            //game->PrintValue("help");
+        };
     };
-};
+}
