@@ -1,4 +1,4 @@
-#include "include.hpp"
+#include "../include.hpp"
 #include "../quadtree/Quadtree.hpp"
 namespace Collapsa {
     class Game;
