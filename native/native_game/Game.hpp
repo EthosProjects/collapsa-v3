@@ -2,8 +2,8 @@
 #include "napi.h"
 #include <string>
 //#include "../native_emitter/NativeEmitter.hpp"
-#include "quadtree/Quadtree.hpp"
 #include "entities/Player.hpp"
+#include "quadtree/Quadtree.hpp"
 #include "constants.hpp"
 namespace Collapsa {
     class OutputMessage {
@@ -32,6 +32,7 @@ namespace Collapsa {
         std::thread m_loopThread;
         Player * m_Players[constants::PLAYER::LIMIT];
         Entity * m_entities[constants::PLAYER::LIMIT];
+        quadtree::Quadtree m_quadtree;
     public:
         int playerCount;
         Game(Napi::Object t_gameObject, Napi::Env t_env); 
@@ -50,7 +51,6 @@ namespace Collapsa {
         void stopLoop();
         Napi::Value stopLoop(const Napi::CallbackInfo& info);
         void loop();
-        Quadtree qtree;
     };
 
 };

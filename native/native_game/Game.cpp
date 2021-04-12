@@ -21,23 +21,23 @@ namespace Collapsa {
         m_p_inputMessages_mutex.lock();
         for(std::vector<InputMessage*>::iterator ppMessage = m_p_inputMessages.begin(); ppMessage < m_p_inputMessages.end(); ppMessage++){
             InputMessage* pMessage = *ppMessage;
-            std::cout << "Processing message" << std::endl;
             switch(pMessage->data[0]) {
                 case constants::MSG_TYPES::JOIN_GAME: {
-                    std::cout << "Processing join game message" << std::endl;
                     if(playerCount == constants::PLAYER::LIMIT){
                         //Create a "Game full message"
                         break;
                     }
-                    size_t i = 0;
-                    while(i < constants::PLAYER::LIMIT){
-                        if(m_Players[i] == nullptr) break;
-                        ++i;
-                    };
-                    m_Players[i] = new Player(this, pMessage->socketid);
-                    this->m_p_socketPlayerMap[pMessage->socketid] = m_Players[i];
+                    int playerIndex = 0,
+                        entityIndex = 0;
+                    while(playerIndex < constants::PLAYER::LIMIT){ if(m_Players[playerIndex] == nullptr) break; ++playerIndex; };
+                    while(entityIndex < constants::PLAYER::LIMIT){ if(m_entities[entityIndex] == nullptr) break; ++entityIndex; };
+                    Player * newPlayer = new Player(this, pMessage->socketid, playerIndex, entityIndex);
+                    m_Players[playerIndex] = newPlayer;
+                    m_entities[entityIndex] = newPlayer;
+                    this->m_p_socketPlayerMap[pMessage->socketid] = newPlayer;
                     playerCount++;
-                    OutputMessage *newPlayerMessage = new OutputMessage{ new uint8_t[3], pMessage->socketid, 3 };
+                    m_quadtree.insert(newPlayer);
+                    OutputMessage *newPlayerMessage = new OutputMessage{ new uint8_t[3]{ 0 }, pMessage->socketid, 3 };
                     m_p_outputMessages_mutex.lock();
                     m_p_outputMessages.push_back(newPlayerMessage);
                     m_p_outputMessages_mutex.unlock();
@@ -70,7 +70,6 @@ namespace Collapsa {
             (std::string) info[1].As<Napi::Object>().Get("id").As<Napi::String>()
         ));
         m_p_inputMessages_mutex.unlock();
-        //std::cout << "Reading Message" << std::endl;
         return env.Undefined();
     };
     Napi::Value Game::getMessages(const Napi::CallbackInfo& info){
@@ -98,7 +97,7 @@ namespace Collapsa {
     void Game::stopLoop(){ m_running = false; m_loopThread.join();};
     void Game::update(){};
     Game::Game(Napi::Object gameObject, Napi::Env env): 
-        qtree(4, 5, 6, 5),
+        m_quadtree(4, 5, 6, 5),
         playerCount(0)
     {
         for(size_t i = 0; i < 255; i++) m_Players[i] = nullptr;
