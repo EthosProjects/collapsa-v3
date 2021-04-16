@@ -37,7 +37,10 @@ export class Game {
             const binaryPacker = new Writer(37).writeUint8(constants.MSG_TYPES.SOCKET_ID).writeString(socketID);
             socket.send(binaryPacker.arrayBuffer);
             socket.id = socketID;
-            socket.on('message', (m) => this.writeMessage(new Uint8Array(m).buffer, socket));
+            socket.on('message', (m) => {
+                console.log(new Uint8Array(m).buffer);
+                this.writeMessage(new Uint8Array(m).buffer, socket);
+            });
         });
         const pingPong = setInterval(() => {
             this.wss.clients.forEach((ws) => {

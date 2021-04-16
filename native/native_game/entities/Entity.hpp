@@ -8,14 +8,14 @@ namespace Collapsa {
         Health::Controller m_health;
         Body::IBody* m_body;
         Game * m_p_game;
-        int m_entityid; 
     public:
         Entity(Health::Options t_healthOptions, Game* t_p_game, int t_entityid): 
             m_health(t_healthOptions),
             m_p_game(t_p_game),
-            m_entityid(t_entityid)
+            entityid(t_entityid)
         {};
         virtual void populateAABB(int*, int*, int*, int*) = 0;
         int id;
+        int entityid; 
     };
 }

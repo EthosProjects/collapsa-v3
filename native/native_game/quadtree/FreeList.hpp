@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <iostream>
 template <class T>
 class FreeList {
 public:
@@ -28,6 +29,9 @@ private:
     union FreeElement {
         T element;
         int next;
+        FreeElement(T t_element): element(t_element) {
+            std::cout << "Creating FreeElement" << std::endl;
+        };
     };
     std::vector<FreeElement> data;
     int first_free;
@@ -43,8 +47,7 @@ int FreeList<T>::insert(const T& element) {
         data[index].element = element;
         return index;
     } else {
-        FreeElement fe;
-        fe.element = element;
+        FreeElement fe { element };
         data.push_back(fe);
         return static_cast<int>(data.size() - 1);
     }

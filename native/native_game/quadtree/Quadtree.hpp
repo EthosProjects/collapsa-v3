@@ -8,6 +8,7 @@ namespace Collapsa {
     namespace quadtree {
         struct QuadNode{
             int32_t first_child{ -1 };
+            bool divided { 0 };
         };
         // Represents an element in the quadtree.
         struct QuadElt {
@@ -20,9 +21,8 @@ namespace Collapsa {
 
         // Represents an element node in the quadtree.
         struct QuadEltNode {
-        public:
             // Points to the next element in the leaf node. A value of -1 indicates the end of the list.
-            int next;
+            int next { -1 };
             // Stores the element index.
             int element;
         };
@@ -39,6 +39,8 @@ namespace Collapsa {
             // sequence is always the root.
             std::vector<QuadNode> nodes;
             void insert(Collapsa::Entity*);
+            void moveEltNodeTo(int, int);
+            void query(int t_x1, int t_y1, int t_x2, int t_y2);
             // Stores the quadtree extents.
             int root_rect[4];
 
@@ -50,7 +52,7 @@ namespace Collapsa {
 
             // Stores the maximum depth allowed for the quadtree.
             int max_depth;
-            Quadtree(int x, int y, int w, int h);
+            Quadtree(int x1, int y1, int x2, int y2);
         };
 
     };

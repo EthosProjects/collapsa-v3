@@ -1,6 +1,4 @@
 #pragma once
-#include "napi.h"
-#include <string>
 //#include "../native_emitter/NativeEmitter.hpp"
 #include "entities/Player.hpp"
 #include "quadtree/Quadtree.hpp"
@@ -23,6 +21,7 @@ namespace Collapsa {
         InputMessage(uint8_t* t_data, std::string t_socketid): data(t_data), socketid(t_socketid){};
     };
     class Game {
+    protected:
         std::atomic<bool> m_running;
         std::vector<InputMessage*> m_p_inputMessages;
         std::vector<OutputMessage*> m_p_outputMessages;
@@ -30,26 +29,19 @@ namespace Collapsa {
         std::mutex m_p_outputMessages_mutex;
         std::map<std::string, Player*> m_p_socketPlayerMap;
         std::thread m_loopThread;
-        Player * m_Players[constants::PLAYER::LIMIT];
-        Entity * m_entities[constants::PLAYER::LIMIT];
+        Player* m_Players[constants::PLAYER::LIMIT];
+        Entity* m_entities[constants::PLAYER::LIMIT];
         quadtree::Quadtree m_quadtree;
     public:
         int playerCount;
-        Game(Napi::Object t_gameObject, Napi::Env t_env); 
+        Game(); 
         ~Game(){
             std::cout << "Game destroyed" << std::endl;
         }
-        static void exportMethods(Napi::Env env, Napi::Object exports);
-        static Napi::Value bindClassToNative(const Napi::CallbackInfo& info);
-        static Napi::Value bindInstanceToNative(const Napi::CallbackInfo& info);
-        Napi::Value writeMessage(const Napi::CallbackInfo& info);
         void readMessages();
-        Napi::Value getMessages(const Napi::CallbackInfo& info);
         void update();
         void startLoop();
-        Napi::Value startLoop(const Napi::CallbackInfo& info);
         void stopLoop();
-        Napi::Value stopLoop(const Napi::CallbackInfo& info);
         void loop();
     };
 

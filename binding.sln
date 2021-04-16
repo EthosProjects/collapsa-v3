@@ -1,0 +1,16 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "native_game", "native_game.vcproj", "{3C4AC22D-0DFF-05CA-C9BB-539E1EA6E270}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Default|Win32 = Default|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C4AC22D-0DFF-05CA-C9BB-539E1EA6E270}.Default|Win32.ActiveCfg = Default|Win32
+		{3C4AC22D-0DFF-05CA-C9BB-539E1EA6E270}.Default|Win32.Build.0 = Default|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

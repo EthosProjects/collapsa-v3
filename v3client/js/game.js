@@ -44,15 +44,16 @@ const connect = (reconnectAttempt) =>
         ws.onclose = async () => {
             if (reconnectAttempt) return;
             let successfulConnection = await connect(true);
+            reconnectAttempts++;
             while (!successfulConnection && reconnectAttempts < maxReconnectAttempts) {
+                if (reconnectAttempts % maxReconnectAttempts == 0) alert('Failed to Reconnect.');
                 successfulConnection = await connect(true);
                 reconnectAttempts++;
             }
             reconnectAttempts = 0;
-            if (successfulConnection) {
-                if (!resolved) resolve(true);
-                resolved = true;
-            } else alert('Failed to Reconnect.');
+            if (!resolved) resolve(true);
+            resolved = true;
+            alert('Reconnected successfully');
             //ws.removeEventListener('message', receiveSocketID);
             //ws.removeEventListener('message', handleMessage);
             //console.log('Error disconnected from server');
