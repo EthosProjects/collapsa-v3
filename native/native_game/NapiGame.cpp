@@ -39,9 +39,7 @@ namespace Collapsa {
     Napi::Value NapiGame::getMessages(const Napi::CallbackInfo& info){
         Napi::Env env = info.Env();
         Napi::Array buffArray = Napi::Array::New(env, m_p_outputMessages.size()).As<Napi::Array>();
-        #ifndef NO_NAPI
         m_p_outputMessages_mutex.lock();
-        #endif
         unsigned int i = 0;
         for(OutputMessage* ppOutputMessage: m_p_outputMessages){
             buffArray[i] = Napi::ArrayBuffer::New(env, (void*) ppOutputMessage->data, ppOutputMessage->dataLength);

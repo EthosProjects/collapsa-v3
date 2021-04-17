@@ -8,3 +8,4 @@
 #include <map>
 #include <random>
 #include <string>
+#include <atomic>

@@ -63,11 +63,12 @@ namespace Collapsa {
                     };
                     int i = 1;
                     int prevIndex = nodes[nData.nodeIndex].first_child;
-                    while (i < 8) {
-                        if (elt_nodes[prevIndex].next == -1) break;
+                    while (true) {
+                        if (elt_nodes[prevIndex].next == -1 || !(i < 8)) break;
                         prevIndex = elt_nodes[prevIndex].next;
                         i++;
                     }
+                    std::cout << i << std::endl;
                     if (i == 8 && nData.depth != 8) {
                         int prevIndex = nodes[nData.nodeIndex].first_child;
                         int contiguousIndex = static_cast<int>(nodes.size());
