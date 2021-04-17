@@ -17,9 +17,7 @@ namespace Collapsa {
                 y1(t_y1),
                 x2(t_x2),
                 y2(t_y2)
-            {
-
-            }
+            {};
         };
         Quadtree::Quadtree(int x1, int y1, int x2, int y2) {
             root_rect[0] = x1;
@@ -28,7 +26,7 @@ namespace Collapsa {
             root_rect[3] = y2;
             elts = FreeList<QuadElt>();
             elt_nodes = FreeList<QuadEltNode>();
-            nodes = std::vector<QuadNode>(256);
+            nodes = std::vector<QuadNode>();
             nodes.push_back(QuadNode());
         };
         void Quadtree::insert(Collapsa::Entity* e) {
@@ -47,8 +45,8 @@ namespace Collapsa {
                     bool inLeftHalf = (qElt.x1 < nData.x2) && ((nData.x1 + nData.x2) / 2 < qElt.x2);
                     leaves.pop_back();
                     if(inTopHalf) {
-                        if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 0, nData.x1, nData.y2, (nData.x1 + nData.x2) / 2, (nData.y1 + nData.y2) / 2 });
-                        if (inLeftHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 1, (nData.x1 + nData.x2) / 2, nData.y2, nData.x2, (nData.y1 + nData.y2) / 2 });
+                        if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 0, nData.x1, nData.y1, (nData.x1 + nData.x2) / 2, (nData.y1 + nData.y2) / 2 });
+                        if (inLeftHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 1, (nData.x1 + nData.x2) / 2, nData.y1, nData.x2, (nData.y1 + nData.y2) / 2 });
                     }
                     if (inBottomHalf) {
                         if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 2, nData.x1, (nData.y1 + nData.y2) / 2, (nData.x1 + nData.x2) / 2, nData.y2 });
@@ -59,6 +57,7 @@ namespace Collapsa {
                         QuadEltNode qEltNode = QuadEltNode();
                         qEltNode.element = elementId;
                         nodes[nData.nodeIndex].first_child = elt_nodes.insert(qEltNode);
+                        leaves.pop_back();
                         continue;
                     };
                     int i = 1;
@@ -68,8 +67,7 @@ namespace Collapsa {
                         prevIndex = elt_nodes[prevIndex].next;
                         i++;
                     }
-                    std::cout << i << std::endl;
-                    if (i == 8 && nData.depth != 8) {
+                    if (i == 8 && nData.depth != 3) {
                         int prevIndex = nodes[nData.nodeIndex].first_child;
                         int contiguousIndex = static_cast<int>(nodes.size());
                         nodes.push_back(QuadNode());
@@ -93,9 +91,6 @@ namespace Collapsa {
                                 if (inLeftHalf) moveEltNodeTo(contiguousIndex + 3, prevIndex);
                             }
                             for (int nodeIndex : childIndices) moveEltNodeTo(contiguousIndex + nodeIndex, prevIndex);
-                            /*std::cout << i << std::endl;
-                            std::cout << qElt.x1 << " " << qElt.y1 << " " << qElt.x2 << " " << qElt.y2 << std::endl;
-                            std::cout << nData.x1 << " " << nData.y1 << " " << nData.x2 << " " << nData.y2 << std::endl;*/
                             int toErase = prevIndex;
                             prevIndex = elt_nodes[prevIndex].next;
                             elt_nodes.erase(toErase);
@@ -106,8 +101,8 @@ namespace Collapsa {
                         bool inLeftHalf = (qElt.x1 < nData.x2) && ((nData.x1 + nData.x2) / 2 < qElt.x2);
                         leaves.pop_back();
                         if (inTopHalf) {
-                            if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, contiguousIndex + 0, nData.x1, nData.y2, (nData.x1 + nData.x2)/2, (nData.y1 + nData.y2) / 2 });
-                            if (inLeftHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, contiguousIndex + 1, (nData.x1 + nData.x2) / 2, nData.y2, nData.x2, (nData.y1 + nData.y2) / 2 });
+                            if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, contiguousIndex + 0, nData.x1, nData.y1, (nData.x1 + nData.x2)/2, (nData.y1 + nData.y2) / 2 });
+                            if (inLeftHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, contiguousIndex + 1, (nData.x1 + nData.x2) / 2, nData.y1, nData.x2, (nData.y1 + nData.y2) / 2 });
                         }
                         if (inBottomHalf) {
                             if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, contiguousIndex + 2, nData.x1, (nData.y1 + nData.y2) / 2, (nData.x1 + nData.x2) / 2, nData.y2 });
@@ -115,6 +110,11 @@ namespace Collapsa {
                         }
                         nodes[nData.nodeIndex].divided = true;
                         continue;
+                    } else if(i == 8) {
+                        while (true) {
+                            if (elt_nodes[prevIndex].next == -1) break;
+                            prevIndex = elt_nodes[prevIndex].next;
+                        }
                     }
                     QuadEltNode qEltNode = QuadEltNode();
                     qEltNode.element = elementId;

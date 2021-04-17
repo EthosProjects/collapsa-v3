@@ -29,12 +29,10 @@ private:
     union FreeElement {
         T element;
         int next;
-        FreeElement(T t_element): element(t_element) {
-            std::cout << "Creating FreeElement" << std::endl;
-        };
+        FreeElement(T t_element): element(t_element) {};
     };
     std::vector<FreeElement> data;
-    int first_free;
+    int first_free { -1 };
 };
 template <class T>
 FreeList<T>::FreeList(): first_free(-1) {}
@@ -57,7 +55,6 @@ void FreeList<T>::erase(int n) {
     data[n].next = first_free;
     first_free = n;
 }
-
 template <class T>
 void FreeList<T>::clear() {
     data.clear();

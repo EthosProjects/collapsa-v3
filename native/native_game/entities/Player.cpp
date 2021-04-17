@@ -12,11 +12,9 @@ namespace Collapsa {
     };
     void Player::populateAABB(int* x1, int* y1, int* x2, int* y2) {
         Position::Overwrite position = m_body->getPosition();
-        std::cout << position.x << " " << position.y << std::endl;
         *x1 = position.x - 32;
         *y1 = position.y - 32;
         *x2 = position.x + 32;
         *y2 = position.y + 32;
-        std::cout << "Player populated AABB" << std::endl;
     }
 }

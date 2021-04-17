@@ -48,7 +48,7 @@ namespace Collapsa {
     void Game::stopLoop(){ m_running = false; m_loopThread.join();};
     void Game::update(){};
     Game::Game(): 
-        m_quadtree(0, 0, 255, 255),
+        m_quadtree(0, 0, 256, 256),
         playerCount(0)
     {
         for(size_t i = 0; i < 255; i++) m_Players[i] = nullptr;
