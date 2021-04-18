@@ -19,15 +19,52 @@ namespace Collapsa {
                 y2(t_y2)
             {};
         };
-        Quadtree::Quadtree(int x1, int y1, int x2, int y2) {
-            root_rect[0] = x1;
-            root_rect[1] = y1;
-            root_rect[2] = x2;
-            root_rect[3] = y2;
+        Quadtree::Quadtree(int t_x1, int t_y1, int t_x2, int t_y2) {
+            root_rect[0] = t_x1;
+            root_rect[1] = t_y1;
+            root_rect[2] = t_x2;
+            root_rect[3] = t_y2;
             elts = FreeList<QuadElt>();
             elt_nodes = FreeList<QuadEltNode>();
             nodes = std::vector<QuadNode>();
             nodes.push_back(QuadNode());
+        };
+        std::vector<int> Quadtree::query(int t_x1, int t_y1, int t_x2, int t_y2){
+            std::vector<int> entityList;
+            std::vector<QuadNodeData> leaves;
+            leaves.push_back(QuadNodeData{ 0, 0, root_rect[0], root_rect[1], root_rect[2], root_rect[3] });
+            while (leaves.size() > 0) {
+                QuadNodeData nData = leaves.back();
+                if(nodes[nData.nodeIndex].divided) {
+                    bool inTopHalf = t_y1 < (nData.y1 + nData.y2) / 2 && nData.y1 < t_y2;
+                    bool inBottomHalf = t_y1 < nData.y2 && (nData.y1 + nData.y2) / 2 < t_y2;
+                    bool inRightHalf = t_x2 < (nData.x1 + nData.x2) / 2 && nData.x1 < t_x2;
+                    bool inLeftHalf = t_x2 < nData.x2 && (nData.x1 + nData.x2) / 2 < t_x2;
+                    leaves.pop_back();
+                    if(inTopHalf) {
+                        if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 0, nData.x1, nData.y1, (nData.x1 + nData.x2) / 2, (nData.y1 + nData.y2) / 2 });
+                        if (inLeftHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 1, (nData.x1 + nData.x2) / 2, nData.y1, nData.x2, (nData.y1 + nData.y2) / 2 });
+                    }
+                    if (inBottomHalf) {
+                        if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 2, nData.x1, (nData.y1 + nData.y2) / 2, (nData.x1 + nData.x2) / 2, nData.y2 });
+                        if (inLeftHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 3, (nData.x1 + nData.x2) / 2, (nData.y1 + nData.y2) / 2, nData.x2, nData.y2 });
+                    }
+                }else {
+                    if (nodes[nData.nodeIndex].first_child == -1) { leaves.pop_back(); continue; };
+                    int prevIndex = nodes[nData.nodeIndex].first_child;
+                    while(true){
+                        QuadElt qElt = elts[elt_nodes[prevIndex].element];
+                        if(
+                            t_y1 < qElt.y2 && qElt.y1 < t_y2 &&
+                            t_x1 < qElt.x2 && qElt.x1 < t_x2
+                        ) entityList.push_back(qElt.id);
+                        if (elt_nodes[prevIndex].next == -1) break;
+                        prevIndex = elt_nodes[prevIndex].next;
+                    }
+                    leaves.pop_back();
+                }
+             }
+            return entityList;
         };
         void Quadtree::insert(Collapsa::Entity* e) {
             QuadElt qElt = QuadElt();

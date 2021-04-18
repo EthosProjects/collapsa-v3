@@ -40,7 +40,7 @@ namespace Collapsa {
             std::vector<QuadNode> nodes;
             void insert(Collapsa::Entity*);
             void moveEltNodeTo(int, int);
-            void query(int t_x1, int t_y1, int t_x2, int t_y2);
+            std::vector<int> query(int t_x1, int t_y1, int t_x2, int t_y2);
             // Stores the quadtree extents.
             int root_rect[4];
 

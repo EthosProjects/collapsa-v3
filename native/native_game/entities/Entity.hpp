@@ -4,13 +4,14 @@
 namespace Collapsa {
     class Game;
     class Entity {
+    public:
+        Health::Controller health;
+        Body::IBody* body;
     protected:
-        Health::Controller m_health;
-        Body::IBody* m_body;
         Game * m_p_game;
     public:
         Entity(Health::Options t_healthOptions, Game* t_p_game, int t_entityid): 
-            m_health(t_healthOptions),
+            health(t_healthOptions),
             m_p_game(t_p_game),
             entityid(t_entityid)
         {};

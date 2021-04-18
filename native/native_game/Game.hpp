@@ -29,8 +29,8 @@ namespace Collapsa {
         std::mutex m_p_outputMessages_mutex;
         std::map<std::string, Player*> m_p_socketPlayerMap;
         std::thread m_loopThread;
-        Player* m_Players[constants::PLAYER::LIMIT];
-        Entity* m_entities[constants::PLAYER::LIMIT];
+        Player* m_Players[constants::PLAYER::LIMIT] { nullptr };
+        Entity* m_entities[constants::PLAYER::LIMIT] { nullptr };
         quadtree::Quadtree m_quadtree;
     public:
         int playerCount;

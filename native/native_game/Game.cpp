@@ -20,6 +20,13 @@ namespace Collapsa {
                     this->m_p_socketPlayerMap[pMessage->socketid] = newPlayer;
                     playerCount++;
                     m_quadtree.insert(newPlayer);
+
+                    Position::Overwrite playerPos = newPlayer->body->getPosition();
+                    std::vector<int> entityIds = m_quadtree.query(playerPos.x - 256, playerPos.y - 256, playerPos.x + 256, playerPos.y + 256);
+                    std::cout << "Making player\n";
+                    for (int i: entityIds) {
+                        std::cout << "Entity id is " << i << std::endl;
+                    };
                     OutputMessage *newPlayerMessage = new OutputMessage{ new uint8_t[3]{ 0 }, pMessage->socketid, 3 };
                     m_p_outputMessages_mutex.lock();
                     m_p_outputMessages.push_back(newPlayerMessage);
@@ -52,7 +59,6 @@ namespace Collapsa {
         playerCount(0)
     {
         for(size_t i = 0; i < 255; i++) m_Players[i] = nullptr;
-        std::cout << (m_Players[0] != nullptr) << std::endl;
         startLoop();
     };
 }

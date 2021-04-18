@@ -51,7 +51,7 @@ namespace Collapsa {
     }
     NapiGame::NapiGame(Napi::Object t_gameObject, Napi::Env t_env) {
         t_gameObject.Set("address", Napi::Number::New(t_env, (int) this));
-        t_gameObject.Set("writeMessage", Napi::Function::New(t_env, [this](Napi::CallbackInfo& info){ return writeMessage(info); }));
-        t_gameObject.Set("getMessages", Napi::Function::New(t_env, [this](Napi::CallbackInfo& info){ return getMessages(info); }));
+        t_gameObject.Set("writeMessage", Napi::Function::New(t_env, std::bind(&NapiGame::writeMessage, this, std::placeholders::_1)));
+        t_gameObject.Set("getMessages", Napi::Function::New(t_env, std::bind(&NapiGame::getMessages, this, std::placeholders::_1)));
     }
 };
