@@ -20,6 +20,14 @@ namespace Collapsa {
         uint8_t * data;
         InputMessage(uint8_t* t_data, std::string t_socketid): data(t_data), socketid(t_socketid){};
     };
+    class Reader {
+    public:
+        uint8_t* buffer;
+        int bufferSize;
+        Reader(uint8_t* t_buffer, int t_bufferSize): buffer(t_buffer), bufferSize(t_bufferSize) {
+            
+        }
+    };
     class Game {
     protected:
         std::atomic<bool> m_running;

@@ -2,13 +2,13 @@
     "name": "collapsa.io",
     "version": "0.6.7",
     "description": "It's a game",
-    "homepage": "https://github.com/Logos-King/omegalords#readme",
-    "main": "V3server.js",
+    "homepage": "https://github.com/Logos-King/collapsa-v3#readme",
+    "main": "v3server.js",
     "license": "MIT",
     "author": "Logos King",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Logos-King/collapsa.git"
+        "url": "git+https://github.com/Logos-King/collapsa-v3.git"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
@@ -17,7 +17,6 @@
         "discord-rpc": "^3.1.4",
         "discord.js": "^12.3.1",
         "express": "^4.17.1",
-        "matter-js": "^0.14.2",
         "mongodb": "^3.6.1",
         "nhentai-api": "^3.0.2",
         "node-addon-api": "^3.1.0",
