@@ -21,6 +21,7 @@ namespace constants {
         const int ACTION_KEY = 18;
     };
     namespace PLAYER {
+        const int TYPE = 1;
         const int LIMIT = 255;
     };
 };

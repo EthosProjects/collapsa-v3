@@ -7,6 +7,7 @@ namespace Collapsa {
     public:
         Health::Controller health;
         Body::IBody* body;
+        volatile int is;
     protected:
         Game * m_p_game;
     public:
@@ -16,7 +17,7 @@ namespace Collapsa {
             entityid(t_entityid)
         {};
         virtual void populateAABB(int*, int*, int*, int*) = 0;
-        int id;
-        int entityid; 
+        uint16_t id;
+        uint16_t entityid; 
     };
 }

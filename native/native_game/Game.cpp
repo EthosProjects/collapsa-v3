@@ -22,12 +22,31 @@ namespace Collapsa {
                     m_quadtree.insert(newPlayer);
 
                     Position::Overwrite playerPos = newPlayer->body->getPosition();
-                    std::vector<int> entityIds = m_quadtree.query(playerPos.x - 256, playerPos.y - 256, playerPos.x + 256, playerPos.y + 256);
+                    std::set<int> entityIds = m_quadtree.query(playerPos.x - 256, playerPos.y - 256, playerPos.x + 256, playerPos.y + 256);
+                    std::set<int> playerIds;
                     std::cout << "Making player\n";
                     for (int i: entityIds) {
-                        std::cout << "Entity id is " << i << std::endl;
+                        if(m_entities[i]->is == constants::PLAYER::TYPE) playerIds.insert(i);
                     };
-                    OutputMessage *newPlayerMessage = new OutputMessage{ new uint8_t[3]{ 0 }, pMessage->socketid, 3 };
+                    newPlayer->viewport.players = playerIds;
+                    // 00000000 0000000000000000 0000000000000000 00000000 0000000 
+                    // PlayerID XPosition        YPosition        XVel     YVel
+                    constexpr uint16_t playersize = 1 + 4 + 2;
+                    uint16_t outputSize = 2 + playerIds.size() * playersize;
+                    OutputMessage *newPlayerMessage = new OutputMessage { 
+                        new uint8_t[outputSize]{ 0 }, 
+                        pMessage->socketid,
+                        outputSize
+                    };
+                    newPlayerMessage->data[0] = constants::MSG_TYPES::ADD_ENTITY;
+                    newPlayerMessage->data[1] = playerIds.size();
+                    int msgIndex = 2;
+                    for(int playerId : playerIds) {
+                        newPlayerMessage->data[msgIndex] = m_Players[playerId]->id;
+                        Position::Overwrite playerPosition = m_Players[playerId]->body->getPosition();
+                        
+                        msgIndex += playersize;
+                    }
                     m_p_outputMessages_mutex.lock();
                     m_p_outputMessages.push_back(newPlayerMessage);
                     m_p_outputMessages_mutex.unlock();

@@ -7,6 +7,7 @@ namespace Collapsa {
     Player::Player(Game* t_p_game, std::string t_socketid, int t_id, int t_entityid):
         Entity(Health::Options(0, 100), t_p_game, t_entityid) 
     {
+        is = constants::PLAYER::TYPE;
         body = new Body::Circle(32, Position::Overwrite(ranPos(), ranPos()));
         this->id = t_id;
     };

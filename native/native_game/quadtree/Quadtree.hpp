@@ -1,6 +1,7 @@
 #pragma once
 #include "FreeList.hpp"
 #include <cstdint>
+#include <set>
 #include "../Controllers.hpp"
 #include "../entities/Entity.hpp"
 
@@ -40,7 +41,7 @@ namespace Collapsa {
             std::vector<QuadNode> nodes;
             void insert(Collapsa::Entity*);
             void moveEltNodeTo(int, int);
-            std::vector<int> query(int t_x1, int t_y1, int t_x2, int t_y2);
+            std::set<int> query(int t_x1, int t_y1, int t_x2, int t_y2);
             // Stores the quadtree extents.
             int root_rect[4];
 

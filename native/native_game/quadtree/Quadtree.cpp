@@ -29,8 +29,8 @@ namespace Collapsa {
             nodes = std::vector<QuadNode>();
             nodes.push_back(QuadNode());
         };
-        std::vector<int> Quadtree::query(int t_x1, int t_y1, int t_x2, int t_y2){
-            std::vector<int> entityList;
+        std::set<int> Quadtree::query(int t_x1, int t_y1, int t_x2, int t_y2){
+            std::set<int> entityList;
             std::vector<QuadNodeData> leaves;
             leaves.push_back(QuadNodeData{ 0, 0, root_rect[0], root_rect[1], root_rect[2], root_rect[3] });
             while (leaves.size() > 0) {
@@ -38,8 +38,8 @@ namespace Collapsa {
                 if(nodes[nData.nodeIndex].divided) {
                     bool inTopHalf = t_y1 < (nData.y1 + nData.y2) / 2 && nData.y1 < t_y2;
                     bool inBottomHalf = t_y1 < nData.y2 && (nData.y1 + nData.y2) / 2 < t_y2;
-                    bool inRightHalf = t_x2 < (nData.x1 + nData.x2) / 2 && nData.x1 < t_x2;
-                    bool inLeftHalf = t_x2 < nData.x2 && (nData.x1 + nData.x2) / 2 < t_x2;
+                    bool inRightHalf = t_x1 < (nData.x1 + nData.x2) / 2 && nData.x1 < t_x2;
+                    bool inLeftHalf = t_x1 < nData.x2 && (nData.x1 + nData.x2) / 2 < t_x2;
                     leaves.pop_back();
                     if(inTopHalf) {
                         if (inRightHalf) leaves.push_back(QuadNodeData{ nData.depth + 1, nodes[nData.nodeIndex].first_child + 0, nData.x1, nData.y1, (nData.x1 + nData.x2) / 2, (nData.y1 + nData.y2) / 2 });
@@ -57,7 +57,7 @@ namespace Collapsa {
                         if(
                             t_y1 < qElt.y2 && qElt.y1 < t_y2 &&
                             t_x1 < qElt.x2 && qElt.x1 < t_x2
-                        ) entityList.push_back(qElt.id);
+                        ) entityList.insert(qElt.id);
                         if (elt_nodes[prevIndex].next == -1) break;
                         prevIndex = elt_nodes[prevIndex].next;
                     }
@@ -162,7 +162,6 @@ namespace Collapsa {
             };
         };
         void Quadtree::moveEltNodeTo(int nodeIndex, int eltNodeIndex) {
-            QuadElt qElt = elts[elt_nodes[eltNodeIndex].element];
             QuadEltNode qEltNode = QuadEltNode();
             qEltNode.element = elt_nodes[eltNodeIndex].element;
             if (nodes[nodeIndex].first_child == -1) {

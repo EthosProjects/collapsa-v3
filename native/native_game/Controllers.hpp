@@ -7,37 +7,41 @@ namespace Collapsa {
     namespace Position {
         class Overwrite {
         public:
-            int x;
-            int y;
+            int16_t x;
+            int16_t y;
             Overwrite(int t_x, int t_y) : x(t_x), y(t_y) {}
         };
         class Options {
         public:
-            int minX;
-            int maxX;
-            int minY;
-            int maxY;
-            Options(int t_minX, int t_maxX, int t_minY, int t_maxY) :
+            int16_t minX;
+            int16_t maxX;
+            int16_t minY;
+            int16_t maxY;
+            Options(int16_t t_minX, int16_t t_maxX, int16_t t_minY, int16_t t_maxY) :
                 minX(t_minX),
                 maxX(t_maxX),
                 minY(t_minY),
                 maxY(t_maxY) {};
+            Options() :
+                minX(0),
+                maxX(255),
+                minY(0),
+                maxY(255) {};
         };
         class Controller {
-            int m_x;
-            int m_y;
+            int16_t m_x;
+            int16_t m_y;
             Options m_options;
-            Options DefaultOptions{ 0, 255, 0, 255 };
         public:
             virtual int getX() { return m_x; };
             virtual int getY() { return m_y; };
-            virtual void setX(int val) { m_x = val; };
-            virtual void setY(int val) { m_y = val; };
-            Controller() : m_options(DefaultOptions), m_x(DefaultOptions.minX), m_y(DefaultOptions.minY) {};
-            Controller(Overwrite t_overwrite) : m_options(DefaultOptions), m_x(t_overwrite.x), m_y(t_overwrite.y) {};
-            Controller(int t_x, int t_y) : m_options(DefaultOptions), m_x(t_x), m_y(t_y) {};
+            virtual void setX(int16_t val) { m_x = val; };
+            virtual void setY(int16_t val) { m_y = val; };
+            Controller(): m_x(0), m_y(0) {};
+            Controller(int t_x, int t_y) : m_x(t_x), m_y(t_y) {};
             Controller(Options t_options, int t_x, int t_y) : m_options(t_options), m_x(t_x), m_y(t_y) {};
             Controller(Options t_options) : m_options(t_options), m_x(t_options.minX), m_y(t_options.minY) {};
+            Controller(Overwrite t_overwrite) : m_x(t_overwrite.x), m_y(t_overwrite.y) {};
         };
     };
     namespace Health {
