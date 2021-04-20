@@ -10,15 +10,6 @@ import http from 'http';
 import https from 'https';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-const key = fs.readFileSync('encryption/server.key') + '';
-const cert = fs.readFileSync('encryption/www_collapsa_io.crt') + '';
-const ca = fs.readFileSync('encryption/www_collapsa_io.ca-bundle') + '';
-//HTTP/HTTPS server requirements
-let httpsOptions = {
-    key: key,
-    cert: cert,
-    ca: ca,
-};
 //Middleware
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -35,6 +26,15 @@ let httpsServer;
 let httpServer;
 process.env.PORT = process.env.PORT | 443;
 if (process.env.NODE_ENV == 'development') {
+    //HTTP/HTTPS server requirements
+    const key = fs.readFileSync('encryption/server.key') + '';
+    const cert = fs.readFileSync('encryption/www_collapsa_io.crt') + '';
+    const ca = fs.readFileSync('encryption/www_collapsa_io.ca-bundle') + '';
+    let httpsOptions = {
+        key: key,
+        cert: cert,
+        ca: ca,
+    };
     httpsServer = https.createServer(httpsOptions, app).listen(process.env.PORT, () => {
         //loadEvents.set('HTTPS Server', ['HTTPS Server is listening', timerToString(Date.now() - loginStart)]);
         //checkStatus();
