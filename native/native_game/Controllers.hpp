@@ -39,8 +39,8 @@ namespace Collapsa {
             virtual void setY(int16_t val) { m_y = val; };
             Controller(): m_x(0), m_y(0) {};
             Controller(int t_x, int t_y) : m_x(t_x), m_y(t_y) {};
-            Controller(Options t_options, int t_x, int t_y) : m_options(t_options), m_x(t_x), m_y(t_y) {};
-            Controller(Options t_options) : m_options(t_options), m_x(t_options.minX), m_y(t_options.minY) {};
+            Controller(Options t_options, int t_x, int t_y) :m_x(t_x), m_y(t_y), m_options(t_options) {};
+            Controller(Options t_options) : m_x(t_options.minX), m_y(t_options.minY), m_options(t_options) {};
             Controller(Overwrite t_overwrite) : m_x(t_overwrite.x), m_y(t_overwrite.y) {};
         };
     };

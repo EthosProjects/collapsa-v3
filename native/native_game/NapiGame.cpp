@@ -14,7 +14,7 @@ namespace Collapsa {
     Napi::Value NapiGame::bindInstanceToNative(const Napi::CallbackInfo & info){
         Napi::Env env = info.Env();
         Napi::Object gameObj = info[0].As<Napi::Object>();
-        Game * game = new NapiGame(gameObj, env);
+        new NapiGame(gameObj, env);
         return env.Undefined();
     }
     Napi::Value NapiGame::writeMessage(const Napi::CallbackInfo & info){

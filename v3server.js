@@ -41,10 +41,8 @@ if (process.env.NODE_ENV == 'development') {
     global.hServer = httpsServer;
 } else {
     console.log(process.env.PORT);
-    httpServer = http.createServer(app).listen(process.env.PORT, () => {
-        //loadEvents.set('HTTPS Server', ['HTTP Server is listening', timerToString(Date.now() - loginStart)]);
-        //checkStatus();
-    });
+    httpServer = http.createServer(app)
+    httpServer.listen(process.env.PORT);
     app.use(function (req, res, next) {
         res.setHeader('Strict-Transport-Security', 'max-age=8640000; includeSubDomains');
         if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === 'http') {
