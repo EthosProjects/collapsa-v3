@@ -10,7 +10,6 @@ namespace Collapsa {
                 new uint8_t[1] {0}, 
                 (std::string) "sdasdsadas"
             ));
-            std::cout << "simming join\n";
             m_p_inputMessages_mutex.unlock();
         };
     };

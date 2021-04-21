@@ -2,7 +2,7 @@
 using namespace Collapsa;
 int main() {
 	NativeGame* game = new NativeGame();
-	for (int i = 0; i < 255; i++) {
+	for (int i = 0; i < 256; i++) {
 		game->simJoin();
 	}
 	std::this_thread::sleep_for(std::chrono::seconds(30));

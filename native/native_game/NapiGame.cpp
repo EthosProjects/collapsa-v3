@@ -28,11 +28,15 @@ namespace Collapsa {
             return info.Env().Undefined();
         }
         Napi::ArrayBuffer message = info[0].As<Napi::ArrayBuffer>();
-        m_p_inputMessages_mutex.lock();
-        m_p_inputMessages.push_back(new InputMessage(
-            reinterpret_cast<uint8_t*>(message.Data()), 
+        InputMessage* inputMessage = new InputMessage {
+            new uint8_t[message.ByteLength()],
+            message.ByteLength(), 
             (std::string) info[1].As<Napi::Object>().Get("id").As<Napi::String>()
-        ));
+        };
+        uint8_t* arrayBufferData = reinterpret_cast<uint8_t*>(message.Data());
+        for (size_t i = 0; i < inputMessage->byteLength; i++) inputMessage->buffer[i] = arrayBufferData[i];
+        m_p_inputMessages_mutex.lock();
+        m_p_inputMessages.push_back(inputMessage);
         m_p_inputMessages_mutex.unlock();
         return env.Undefined();
     };
@@ -42,7 +46,7 @@ namespace Collapsa {
         m_p_outputMessages_mutex.lock();
         unsigned int i = 0;
         for(OutputMessage* ppOutputMessage: m_p_outputMessages){
-            buffArray[i] = Napi::ArrayBuffer::New(env, (void*) ppOutputMessage->data, ppOutputMessage->dataLength);
+            buffArray[i] = Napi::ArrayBuffer::New(env, (void*) ppOutputMessage->buffer, ppOutputMessage->byteLength);
             ++i;
         }
         m_p_outputMessages.clear();

@@ -77,4 +77,9 @@ const startGame = (username) => {
     console.log(bw.arrayBuffer.byteLength);
     ws.send(bw.arrayBuffer);
 };
+let bw = new BinaryWriter(2);
+let bw2 = new BinaryWriter(2, true);
+bw.writeUint16(3);
+bw2.writeUint16(3);
+console.log(bw, bw2);
 export default null;

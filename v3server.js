@@ -12,7 +12,6 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 //Middleware
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import favicon from 'serve-favicon';
 import express from 'express';
 const app = express();
@@ -41,6 +40,7 @@ if (process.env.NODE_ENV == 'development') {
     });
     global.hServer = httpsServer;
 } else {
+    console.log(process.env.PORT);
     httpServer = http.createServer(app).listen(process.env.PORT, () => {
         //loadEvents.set('HTTPS Server', ['HTTP Server is listening', timerToString(Date.now() - loginStart)]);
         //checkStatus();

@@ -4,7 +4,7 @@ namespace Collapsa {
         m_p_inputMessages_mutex.lock();
         for(std::vector<InputMessage*>::iterator ppMessage = m_p_inputMessages.begin(); ppMessage < m_p_inputMessages.end(); ppMessage++){
             InputMessage* pMessage = *ppMessage;
-            switch(pMessage->data[0]) {
+            switch(pMessage->buffer[0]) {
                 case constants::MSG_TYPES::JOIN_GAME: {
                     if(playerCount == constants::PLAYER::LIMIT){
                         //Create a "Game full message"
@@ -24,7 +24,6 @@ namespace Collapsa {
                     Position::Overwrite playerPos = newPlayer->body->getPosition();
                     std::set<int> entityIds = m_quadtree.query(playerPos.x - 256, playerPos.y - 256, playerPos.x + 256, playerPos.y + 256);
                     std::set<int> playerIds;
-                    std::cout << "Making player\n";
                     for (int i: entityIds) {
                         if(m_entities[i]->is == constants::PLAYER::TYPE) playerIds.insert(i);
                     };
@@ -35,17 +34,17 @@ namespace Collapsa {
                     uint16_t outputSize = 2 + playerIds.size() * playersize;
                     OutputMessage *newPlayerMessage = new OutputMessage { 
                         new uint8_t[outputSize]{ 0 }, 
-                        pMessage->socketid,
-                        outputSize
+                        outputSize,
+                        pMessage->socketid
                     };
-                    newPlayerMessage->data[0] = constants::MSG_TYPES::ADD_ENTITY;
-                    newPlayerMessage->data[1] = playerIds.size();
-                    int msgIndex = 2;
+                    Writer w { newPlayerMessage->buffer, newPlayerMessage->byteLength };
+                    w.writeUint8(constants::MSG_TYPES::ADD_ENTITY).writeUint8(playerIds.size());
                     for(int playerId : playerIds) {
-                        newPlayerMessage->data[msgIndex] = m_Players[playerId]->id;
                         Position::Overwrite playerPosition = m_Players[playerId]->body->getPosition();
-                        
-                        msgIndex += playersize;
+                        w.writeUint8(m_Players[playerId]->id)
+                            .writeUint16(playerPosition.x, false)
+                            .writeUint16(playerPosition.y, false)
+                            .writeUint16(0, false);
                     }
                     m_p_outputMessages_mutex.lock();
                     m_p_outputMessages.push_back(newPlayerMessage);
@@ -53,10 +52,9 @@ namespace Collapsa {
                     break;
                 }
                 default: {
-                    std::cout << "Unknown Message " << pMessage->data[0] << std::endl;
+                    std::cout << "Unknown Message " << pMessage->buffer[0] << std::endl;
                 }
             }
-            std::cout << "Processed message" << std::endl;
             delete pMessage;
         }
         m_p_inputMessages.clear();

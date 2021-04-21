@@ -4,29 +4,58 @@
 #include "quadtree/Quadtree.hpp"
 #include "constants.hpp"
 namespace Collapsa {
-    class OutputMessage {
+    class BinaryInterface {
+    public:
+        uint8_t* buffer;
+        uint32_t byteLength;
+        int index { 0 };
+        BinaryInterface(uint8_t* t_buffer, uint32_t t_byteLength): buffer(t_buffer), byteLength(t_byteLength) {};
+    };
+    class OutputMessage: public BinaryInterface {
     public:
         std::string socketid;
-        uint8_t* data;
-        uint16_t dataLength;
-        OutputMessage(uint8_t* t_data, std::string t_socketid, uint16_t t_dataLength): data(t_data), socketid(t_socketid), dataLength(t_dataLength) {};
+        OutputMessage(uint8_t* t_buffer, uint32_t t_byteLength, std::string t_socketid): BinaryInterface(t_buffer, t_byteLength), socketid(t_socketid) {};
         ~OutputMessage(){
             std::cout << "Destructed output message but didn't free buffer";
         }
     };
-    class InputMessage {
+    class InputMessage: public BinaryInterface {
     public:
         std::string socketid;
-        uint8_t * data;
-        InputMessage(uint8_t* t_data, std::string t_socketid): data(t_data), socketid(t_socketid){};
-    };
-    class Reader {
-    public:
-        uint8_t* buffer;
-        int bufferSize;
-        Reader(uint8_t* t_buffer, int t_bufferSize): buffer(t_buffer), bufferSize(t_bufferSize) {
-            
+        InputMessage(uint8_t* t_buffer, uint32_t t_byteLength, std::string t_socketid): BinaryInterface(t_buffer, t_byteLength), socketid(t_socketid) {};
+        ~InputMessage(){
+            delete[] buffer;
+            std::cout << "Destructed input message and freed buffer";
         }
+    };
+    class Reader: public BinaryInterface {
+        Reader(uint8_t* t_buffer, uint32_t t_byteLength): BinaryInterface(t_buffer, t_byteLength) {};
+        uint8_t readUint8(bool littleEndian = false) { ++index; return buffer[index-1]; };
+    };
+    class Writer: public BinaryInterface {
+    public:
+        Writer(uint8_t* t_buffer, uint32_t t_byteLength): BinaryInterface(t_buffer, t_byteLength) {};
+        Writer& writeUint8(uint8_t uint8, bool littleEndian = false) { buffer[index] = uint8; ++index; return *this; };
+        Writer& writeUint16(uint16_t uint16, bool littleEndian = false) {
+            buffer[index] = (0xff & uint16) * littleEndian + ((0xff00 & uint16) >> 8) * !littleEndian;
+            buffer[index+1] = ((0xff00 & uint16) >> 8) * littleEndian + (0xff & uint16) * !littleEndian;
+            index += 2;
+            return *this;
+        };
+        Writer& writeUint32(uint32_t uint32, bool littleEndian = false) {
+            buffer[index] = (0xff & uint32) * littleEndian + ((0xff000000 & uint32) >> 32) * !littleEndian;
+            if (littleEndian) {
+                buffer[index+1] = (0xff00 & uint32) >> 8;
+                buffer[index+2] = (0xff0000 & uint32) >> 16;
+                buffer[index+3] = (0xff000000 & uint32) >> 32;
+            }else {
+                buffer[index+1] = ((0xff0000 & uint32) >> 16);
+                buffer[index+2] = ((0xff00 & uint32) >> 8);
+                buffer[index+3] = 0xff & uint32;
+            }
+            index += 4;
+            return *this;
+        };
     };
     class Game {
     protected:
