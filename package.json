@@ -28,7 +28,7 @@
         "ytdl-core-discord": "^1.2.2"
     },
     "scripts": {
-        "start": "node --experimental-modules --experimental-json-modules ."
+        "start": "node --experimental-json-modules ."
     },
     "bugs": {
         "url": "https://github.com/Logos-King/collapsa/issues",

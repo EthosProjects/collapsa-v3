@@ -1,6 +1,7 @@
 //Defining utility functions
 import { timerToString } from './remastered-lib/util/export.js';
 import epoch from './epoch.js';
+
 const serverEpoch = 1613122192045;
 console.log(`It's been ${timerToString(Date.now() - serverEpoch)} since the server epoch`);
 //Server Requirements
@@ -68,9 +69,6 @@ mongoDB.on('ready', () => {
     collapsa = mongoDB.databases.get('collapsa');
     collapsauserbase = collapsa.collections.get('collapsauserbase');
 });
-//Game Stuff
-import { Game } from './v3lib/Game.js';
-new Game('usaeast1');
 //Server Routing
 app.use(express.json());
 app.use(express.text());
@@ -96,3 +94,6 @@ serveDir('/shared', '/shared');
 app.use((req, res, next) => {
     res.status(404).sendFile(__dirname + '/v3client/html/404.html');
 });
+//Game Stuff
+import { Game } from './v3lib/Game.js';
+new Game('usaeast1');
