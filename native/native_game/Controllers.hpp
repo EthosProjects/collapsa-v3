@@ -73,7 +73,7 @@ namespace Collapsa {
                 m_value = t_health;
             }
             int getHealth() { return m_value; };
-            Controller(Options t_option) : m_option(t_option) {};
+            Controller(Options t_option) : m_value(t_option.maximum), m_option(t_option) {};
         };
     }
     namespace Body {

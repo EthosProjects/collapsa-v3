@@ -29,7 +29,8 @@
         />
     </head>
     <body>
-        <div class="modal-container">
+        <canvas rel="js-gameCanvas"></canvas>
+        <div class="modal-container" id="titleScreen" rel="js-titlescreen">
             <div id="enterGameModal" class="modal">
                 <form id="enterGameForm">
                     <h3 id="enterGameHeader">Join the collapse</h3>
@@ -45,6 +46,7 @@
                 </form>
             </div>
         </div>
+        <div id="alertList" rel="js-alertList"></div>
     </body>
     <script type="module" src="/js/main.js"></script>
 </html>

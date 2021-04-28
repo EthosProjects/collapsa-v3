@@ -1,6 +1,6 @@
-import constants from '../shared/constants.js';
+import constants from '../v3client/js/constants.js';
 import WebSocket from 'ws';
-import { Reader, Writer } from '../shared/v3binlingo.js';
+import { Reader, Writer } from '../v3client/js/v3binlingo.js';
 import { NativeGame } from '../native/export.js';
 import { v4 } from 'uuid';
 export class Game {
@@ -13,6 +13,7 @@ export class Game {
         //console.log(this)
         //this.qtree = new QuadTree([0, 0, constants.MAP.WIDTH, constants.MAP.HEIGHT], this);
         this.wss = new WebSocket.Server({ server: global.hServer, path: '/games/' + link });
+        this.wss.clientMap = new Map();
         this.wss.on('listening', () => {
             console.log(`Game listening with link /games/${link}`);
         });
@@ -37,6 +38,7 @@ export class Game {
             const binaryPacker = new Writer(37).writeUint8(constants.MSG_TYPES.SOCKET_ID).writeString(socketID);
             socket.send(binaryPacker.arrayBuffer);
             socket.id = socketID;
+            this.wss.clientMap.set(socketID, socket);
             socket.on('message', (m) => {
                 console.log(new Uint8Array(m).buffer);
                 this.writeMessage(new Uint8Array(m).buffer, socket);
@@ -49,14 +51,39 @@ export class Game {
                 ws.ping();
             });
         }, 30000);
-        setInterval(() => {
+        const readMessages = () => {
             /**
              * @type {ArrayBuffer[]}
              */
             const messages = this.getMessages();
             if (messages.length == 0) return;
-            console.log(messages);
-        });
+            for (let i = 0; i < messages.length; i++) {
+                let message = messages[i];
+                if (message.socketid == 0) {
+                    continue;
+                }
+                if (!this.wss.clientMap.has(message.socketid) || this.wss.clientMap.get(message.socketid).closed)
+                    continue;
+                this.wss.clientMap.get(message.socketid).send(message);
+            }
+        };
+        let previousTick = Date.now();
+        const loop = () => {
+            let now = Date.now();
+            if (previousTick + constants.TICK_SPEED <= now) {
+                let delta = (now - previousTick) / 1000;
+                previousTick = now;
+                readMessages();
+                //console.log('delta', delta, '(target: ' + TICK_LENGTH_MS +' ms)', 'node ticks', ticks)
+            }
+            const after = Date.now();
+            if (after - previousTick < constants.TICK_SPEED) {
+                setTimeout(loop, constants.TICK_SPEED - (after - previousTick));
+            } else {
+                setImmediate(loop);
+            }
+        };
+        loop();
     }
 }
 NativeGame.bindClassToNative(Game);

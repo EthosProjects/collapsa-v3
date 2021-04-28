@@ -97,6 +97,7 @@ class Reader extends binInterface {
         let str = '';
         let strTArr = this.uint8Array.slice(this.viewIndex, this.viewIndex + len);
         for (let i = 0; i < strTArr.byteLength; i++) str += strTArr[i] !== 0 ? String.fromCharCode(strTArr[i]) : '';
+        this.viewIndex += len;
         return str;
     }
     /**

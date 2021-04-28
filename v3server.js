@@ -41,7 +41,7 @@ if (process.env.NODE_ENV == 'development') {
     global.hServer = httpsServer;
 } else {
     console.log(process.env.PORT);
-    httpServer = http.createServer(app)
+    httpServer = http.createServer(app);
     httpServer.listen(process.env.PORT);
     app.use(function (req, res, next) {
         res.setHeader('Strict-Transport-Security', 'max-age=8640000; includeSubDomains');
@@ -81,7 +81,7 @@ app.use('/api', apiRouter);
 //Game related
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const serveDir = (reqPath, searchPath) => {
-    if (process.env.NODE_ENV !== 'development') app.use(reqPath, express.static(__dirname + path));
+    if (process.env.NODE_ENV === 'development') app.use(reqPath, express.static(__dirname + searchPath));
     else
         app.use(reqPath, (req, res, next) => {
             if (fs.existsSync('.' + searchPath + req.url)) res.sendFile(path.join(__dirname, searchPath + req.url));
@@ -90,6 +90,7 @@ const serveDir = (reqPath, searchPath) => {
 };
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/v3client/html/index.html')));
 serveDir('/v3client', '/v3client');
+serveDir('/client', '/client');
 serveDir('/', '/v3client');
 serveDir('/shared', '/shared');
 app.use((req, res, next) => {

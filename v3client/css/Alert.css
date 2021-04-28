@@ -1,0 +1,42 @@
+#alertList {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30%;
+  display: flex;
+  padding: 10px;
+  z-index: 2;
+  flex-direction: column;
+}
+#alertList .alert {
+  margin: 5px;
+  padding: 12px 30px;
+  border-radius: 30px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#alertList .alert .closebtn {
+  color: white;
+  font-weight: bold;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#alertList .alert .closebtn:hover {
+  color: #aca5a5;
+}
+#alertList .alert.error {
+  background-color: #f44336;
+}
+#alertList .alert.success {
+  background-color: greenyellow;
+}
+#alertList .alert.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 2s, opacity 2s linear;
+}
+
+/*# sourceMappingURL=Alert.css.map */

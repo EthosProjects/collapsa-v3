@@ -29,12 +29,12 @@ namespace Collapsa {
         }
         Napi::ArrayBuffer message = info[0].As<Napi::ArrayBuffer>();
         InputMessage* inputMessage = new InputMessage {
-            new uint8_t[message.ByteLength()],
+            new uint8_t[message.ByteLength()] { 0 },
             message.ByteLength(), 
             (std::string) info[1].As<Napi::Object>().Get("id").As<Napi::String>()
         };
         uint8_t* arrayBufferData = reinterpret_cast<uint8_t*>(message.Data());
-        for (size_t i = 0; i < inputMessage->byteLength; i++) inputMessage->buffer[i] = arrayBufferData[i];
+        for (size_t i = 0; i < inputMessage->byteLength; ++i) inputMessage->buffer[i] = arrayBufferData[i];
         m_p_inputMessages_mutex.lock();
         m_p_inputMessages.push_back(inputMessage);
         m_p_inputMessages_mutex.unlock();
@@ -45,8 +45,13 @@ namespace Collapsa {
         Napi::Array buffArray = Napi::Array::New(env, m_p_outputMessages.size()).As<Napi::Array>();
         m_p_outputMessages_mutex.lock();
         unsigned int i = 0;
-        for(OutputMessage* ppOutputMessage: m_p_outputMessages){
-            buffArray[i] = Napi::ArrayBuffer::New(env, (void*) ppOutputMessage->buffer, ppOutputMessage->byteLength);
+        for(OutputMessage* pOutputMessage: m_p_outputMessages){
+            Napi::ArrayBuffer JSMessage = Napi::ArrayBuffer::New(env, pOutputMessage->byteLength);
+            uint8_t* JSMessageData = reinterpret_cast<uint8_t*>(JSMessage.Data());
+            for(unsigned int i = 0; i < pOutputMessage->byteLength; ++i) JSMessageData[i] = pOutputMessage->buffer[i];
+            JSMessage.As<Napi::Object>().Set("socketid", Napi::String::New(env, pOutputMessage->socketid));
+            buffArray[i] = JSMessage;
+            delete pOutputMessage;
             ++i;
         }
         m_p_outputMessages.clear();

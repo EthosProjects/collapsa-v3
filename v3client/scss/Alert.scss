@@ -1,0 +1,40 @@
+#alertList {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30%;
+    display: flex;
+    padding: 10px;
+    z-index: 2;
+    flex-direction: column;
+    .alert {
+        margin: 5px;
+        padding: 12px 30px;
+        border-radius: 30px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .closebtn {
+            &:hover {
+                color: rgb(172, 165, 165);
+            }
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        &.error {
+            background-color: #f44336;
+        }
+        &.success {
+            background-color: greenyellow;
+        }
+        &.hidden {
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+    }
+}

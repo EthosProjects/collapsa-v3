@@ -41,6 +41,7 @@ const constants = {
         DROPPED_ITEMS_ADD: 16,
         DROPPED_ITEMS_REMOVE: 17,
         ACTION_KEY: 18,
+        PLAYER_ID: 19,
     },
     PLAYER: {
         TYPE: 0,
@@ -62,7 +63,7 @@ const constants = {
         WOOD: 1,
         STONE: 2,
     },
-    TICK_SPEED: 3,
+    TICK_SPEED: 10,
     MAP: {
         WIDTH: Math.pow(2, 11),
         HEIGHT: Math.pow(2, 11),

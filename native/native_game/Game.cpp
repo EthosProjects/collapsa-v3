@@ -4,17 +4,38 @@ namespace Collapsa {
         m_p_inputMessages_mutex.lock();
         for(std::vector<InputMessage*>::iterator ppMessage = m_p_inputMessages.begin(); ppMessage < m_p_inputMessages.end(); ppMessage++){
             InputMessage* pMessage = *ppMessage;
-            switch(pMessage->buffer[0]) {
+            Reader messageReader { *pMessage };
+            uint8_t messageType = messageReader.readUint8();
+            switch(messageType) {
                 case constants::MSG_TYPES::JOIN_GAME: {
                     if(playerCount == constants::PLAYER::LIMIT){
                         //Create a "Game full message"
                         break;
                     }
-                    int playerIndex = 0,
+                    OutputMessage *loadingMessage = new OutputMessage { 
+                        new uint8_t[1]{ constants::MSG_TYPES::GAME_LOADING }, 
+                        1,
+                        pMessage->socketid
+                    };
+                    
+                    m_p_outputMessages_mutex.lock();
+                    m_p_outputMessages.push_back(loadingMessage);
+                    m_p_outputMessages_mutex.unlock();
+                    uint8_t playerIndex = 0,
                         entityIndex = 0;
                     while(playerIndex < constants::PLAYER::LIMIT){ if(m_Players[playerIndex] == nullptr) break; ++playerIndex; };
                     while(entityIndex < constants::PLAYER::LIMIT){ if(m_entities[entityIndex] == nullptr) break; ++entityIndex; };
-                    Player * newPlayer = new Player(this, pMessage->socketid, playerIndex, entityIndex);
+                    OutputMessage *playerIDMessage = new OutputMessage { 
+                        new uint8_t[2]{ constants::MSG_TYPES::PLAYER_ID, playerIndex }, 
+                        2,
+                        pMessage->socketid
+                    };
+
+                    m_p_outputMessages_mutex.lock();
+                    m_p_outputMessages.push_back(playerIDMessage);
+                    m_p_outputMessages_mutex.unlock();
+
+                    Player* newPlayer = new Player(this, pMessage->socketid, messageReader.readString(16), playerIndex, entityIndex);
                     m_Players[playerIndex] = newPlayer;
                     m_entities[entityIndex] = newPlayer;
                     this->m_p_socketPlayerMap[pMessage->socketid] = newPlayer;
@@ -30,8 +51,8 @@ namespace Collapsa {
                     newPlayer->viewport.players = playerIds;
                     // 00000000 0000000000000000 0000000000000000 00000000 0000000 
                     // PlayerID XPosition        YPosition        XVel     YVel
-                    constexpr uint16_t playersize = 1 + 4 + 2;
-                    uint16_t outputSize = 2 + playerIds.size() * playersize;
+                    constexpr uint16_t playersize = 1 + 4 + 2 + 16;
+                    uint32_t outputSize = 2 + playerIds.size() * playersize;
                     OutputMessage *newPlayerMessage = new OutputMessage { 
                         new uint8_t[outputSize]{ 0 }, 
                         outputSize,
@@ -44,7 +65,8 @@ namespace Collapsa {
                         w.writeUint8(m_Players[playerId]->id)
                             .writeUint16(playerPosition.x, false)
                             .writeUint16(playerPosition.y, false)
-                            .writeUint16(0, false);
+                            .writeUint16(0, false)
+                            .writeString(m_Players[playerId]->username, 16);
                     }
                     m_p_outputMessages_mutex.lock();
                     m_p_outputMessages.push_back(newPlayerMessage);
@@ -62,8 +84,12 @@ namespace Collapsa {
     };
     void Game::loop(){
         while(m_running){
+            //auto start = std::chrono::high_resolution_clock::now();
             readMessages();
             update();
+            //auto elapsed = std::chrono::high_resolution_clock::now() - start;
+            //long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
+            //std::cout << microseconds << std::endl;
         }
         std::cout << "Terminated Game loop" << std::endl;
         return;

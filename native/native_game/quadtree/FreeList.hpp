@@ -35,7 +35,9 @@ private:
     int first_free { -1 };
 };
 template <class T>
-FreeList<T>::FreeList(): first_free(-1) {}
+FreeList<T>::FreeList() : first_free(-1) {
+    data.reserve(65536);
+};
 
 template <class T>
 int FreeList<T>::insert(const T& element) {
