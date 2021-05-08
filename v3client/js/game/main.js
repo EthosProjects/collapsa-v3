@@ -2,35 +2,9 @@ const vertexShaderSource = await (await fetch('/v3client/glsl/vertexShader.glsl'
 const fragmentShaderSource = await (await fetch('/v3client/glsl/fragmentShader.glsl')).text();
 import constants from './constants.js';
 import { Reader as BinaryReader, Writer as BinaryWriter } from './v3binlingo.js';
-import Alert from './Alert.js';
-/**
- * @type {null|WebSocket}
- */
-let ws = null,
-    reconnectAttempts = 0,
-    maxReconnectAttempts = 20,
-    receiveSocketID = (e) => {
-        e.data.arrayBuffer().then(async (arrayBuffer) => {
-            let eventData = new Uint8Array(arrayBuffer);
-            if (eventData[0] === constants.MSG_TYPES.SOCKET_ID) {
-                ws.id = '';
-                for (let i = 1; i < 37; i++) ws.id += String.fromCharCode(eventData[i]);
-                /*let token = getCookie('token');
-                if (token) {
-                    let req = await fetch(`${window.location.href}api/v1/games/usaeast1/login`, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'text/plain',
-                            Authorization: 'Basic ' + token,
-                        },
-                        body: ws.id,
-                    });
-                }*/
-                //console.log(ws.id);
-                ws.removeEventListener('message', receiveSocketID);
-            }
-        });
-    };
+import Alert from '../Alert.js';
+import { ws, connect } from './connect.js';
+await connect();
 const Zorque = new FontFace('Zorque', 'url(/img/Zorque.woff)', {});
 const loadFont = new Promise((resolve) =>
     Zorque.load().then((loadedFace) => {
@@ -38,43 +12,6 @@ const loadFont = new Promise((resolve) =>
         resolve();
     }),
 );
-const connect = (reconnectAttempt) =>
-    new Promise((resolve, reject) => {
-        let resolved = false;
-        ws = new WebSocket(`wss://${window.location.host}/games/usaeast1`);
-        ws.addEventListener('open', (event) => {
-            resolve(true);
-            resolved = true;
-        });
-        ws.onopen = () => {
-            new Alert('Connected', 'success');
-            //ws.addEventListener('message', receiveSocketID);
-            //resolve(true);
-            //resolved = true;
-        };
-        ws.onclose = async () => {
-            if (reconnectAttempt) return;
-            new Alert('Disconnected', 'error');
-            let successfulConnection = await connect(true);
-            reconnectAttempts++;
-            while (!successfulConnection && reconnectAttempts < maxReconnectAttempts) {
-                if (reconnectAttempts % maxReconnectAttempts == 0) new Alert('Failed to Reconnect.', 'error');
-                successfulConnection = await connect(true);
-                reconnectAttempts++;
-            }
-            reconnectAttempts = 0;
-            if (!resolved) resolve(true);
-            resolved = true;
-            new Alert('Reconnected successfully', 'success');
-            //ws.removeEventListener('message', receiveSocketID);
-            //ws.removeEventListener('message', handleMessage);
-            //console.log('Error disconnected from server');
-        };
-        ws.onerror = async (e) => {
-            if (!resolved) resolve(false);
-            return;
-        };
-    });
 const assets = {};
 const ASSET_NAMES = ['playerBody.png', 'playerHand.png'];
 const downloadPromise = Promise.all(ASSET_NAMES.map(downloadAsset));
@@ -91,15 +28,13 @@ function downloadAsset(assetName) {
 await Promise.all([downloadPromise, loadFont]);
 new Alert('Loaded Fonts and images', 'success');
 
-connect();
-
 /**
  * @type {HTMLCanvasElement}
  */
 const canvas = document.querySelector('[rel=js-gameCanvas]');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-const gl = canvas.getContext('webgl2', { antialias: true });
+const gl = canvas.getContext('webgl2');
 let setRectangle = (gl, [x, y, width, height], usage) => {
     let x1 = x,
         x2 = x + width,
@@ -165,17 +100,35 @@ class Player {
                     buffer: gl.createBuffer(),
                     attributeLocaton: gl.getAttribLocation(program, 'a_texCoord'),
                 },
+                rotation: {
+                    buffer: gl.createBuffer(),
+                    attributeLocaton: gl.getAttribLocation(program, 'a_rotation'),
+                },
             },
         };
         gl.bindVertexArray(this.gl.body.vertexArray);
+
         gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.position.buffer);
         setRectangle(gl, [this.position.x, this.position.y, 128, 128], gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(this.gl.body.position.attributeLocaton);
         gl.vertexAttribPointer(this.gl.body.position.attributeLocaton, 2, gl.FLOAT, false, 0, 0);
+
         gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.texcoord.buffer);
         setRectangle(gl, [0.0, 0.0, 1.0, 1.0], gl.STATIC_DRAW);
         gl.enableVertexAttribArray(this.gl.body.texcoord.attributeLocaton);
         gl.vertexAttribPointer(this.gl.body.texcoord.attributeLocaton, 2, gl.FLOAT, false, 0, 0);
+        /*
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.rotation.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            46 * Math.PI/180, 
+            46 * Math.PI/180, 
+            46 * Math.PI/180, 
+            46 * Math.PI/180, 
+            46 * Math.PI/180,
+            46 * Math.PI/180
+        ]), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.gl.body.rotation.attributeLocaton);
+        gl.vertexAttribPointer(this.gl.body.rotation.attributeLocaton, 1, gl.FLOAT, false, 0, 0);*/
     }
     show() {
         gl.bindVertexArray(this.gl.body.vertexArray);
@@ -221,6 +174,7 @@ let receiveMessage = async (e) => {
         //window.requestAnimationFrame(gameLoop);
     } else messages.push([messageType, messageReader]);
 };
+import { startCapturingInput, stopCapturingInput, movement } from './input.js';
 const startGame = (username) => {
     let bw = new BinaryWriter(17);
     bw.writeUint8(constants.MSG_TYPES.JOIN_GAME, false, 0);
@@ -232,6 +186,7 @@ const startGame = (username) => {
      */
     let Players = new Array(constants.PLAYER.LIMIT);
     let playerID = false;
+    startCapturingInput();
     let handleMessages = () => {
         if (messages.length == 0) return;
         for (let i = 0; i < messages.length; i++) {

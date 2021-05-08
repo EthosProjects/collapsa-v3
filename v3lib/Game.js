@@ -1,6 +1,6 @@
-import constants from '../v3client/js/constants.js';
+import constants from '../v3client/js/game/constants.js';
 import WebSocket from 'ws';
-import { Reader, Writer } from '../v3client/js/v3binlingo.js';
+import { Reader, Writer } from '../v3client/js/game/v3binlingo.js';
 import { NativeGame } from '../native/export.js';
 import { v4 } from 'uuid';
 export class Game {

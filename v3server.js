@@ -54,21 +54,7 @@ if (process.env.NODE_ENV == 'development') {
     });
     global.hServer = httpServer;
 }
-//MongoDB
-import { database, collection } from './mongoDB/export.js';
 import mongoDB from './globals/mongoDB.js';
-/**
- * @type {database}
- */
-let collapsa;
-/**
- * @type {collection}
- */
-let collapsauserbase;
-mongoDB.on('ready', () => {
-    collapsa = mongoDB.databases.get('collapsa');
-    collapsauserbase = collapsa.collections.get('collapsauserbase');
-});
 //Server Routing
 app.use(express.json());
 app.use(express.text());

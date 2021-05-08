@@ -37,13 +37,14 @@
     </head>
     <body>
         <canvas id="ctx"></canvas>
+        <button rel="js-downloadButton">Download</button>
         <script>
             let pixelNum = 128;
             console.log(pixelNum);
             /**
              * @type {HTMLCanvasElement}
              */
-            let canvas = document.getElementById('ctx');
+            let canvas = document.getElementById('ctx', { antialias: true });
             let ctx = canvas.getContext('2d');
             canvas.style.width = pixelNum + 'px';
             canvas.style.height = pixelNum + 'px';
@@ -51,12 +52,47 @@
             canvas.height = pixelNum;
             let sprites = {
                 'playerBody.png': () => {
+                    ctx.fillStyle = 'black';
                     ctx.beginPath();
                     ctx.arc(pixelNum / 2, pixelNum / 2, pixelNum / 2, 0, 2 * Math.PI);
                     ctx.fill();
                     ctx.fillStyle = '#C3C3C3';
                     ctx.beginPath();
                     ctx.arc(pixelNum / 2, pixelNum / 2, ((pixelNum / 2) * 28) / 30, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = 'black';
+                    ctx.beginPath();
+                    ctx.arc(
+                        ((9 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((8 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((6 / 32) * pixelNum) / 2,
+                        0,
+                        2 * Math.PI,
+                    );
+                    ctx.arc(
+                        ((9 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((-8 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((6 / 32) * pixelNum) / 2,
+                        0,
+                        2 * Math.PI,
+                    );
+                    ctx.fill();
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(
+                        ((6.5 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((7 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((2.5 / 32) * pixelNum) / 2,
+                        0,
+                        2 * Math.PI,
+                    );
+                    ctx.arc(
+                        ((6.5 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((-7 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        ((2.5 / 32) * pixelNum) / 2,
+                        0,
+                        2 * Math.PI,
+                    );
                     ctx.fill();
                 },
                 'playerHand.png': () => {
@@ -78,7 +114,11 @@
                 href.click();
             };
             sprites['playerBody.png']();
-            download('playerBody.png');
+            const downloadbutton = document.querySelector('[rel=js-downloadButton]');
+            downloadbutton.addEventListener('click', () => {
+                download('playerBody.png');
+            });
+            //download('playerBody.png');
         </script>
     </body>
 </html>
