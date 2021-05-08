@@ -13,7 +13,6 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 //Middleware
 import cors from 'cors';
-import favicon from 'serve-favicon';
 import express from 'express';
 const app = express();
 /**
@@ -24,7 +23,6 @@ let httpsServer;
  * @type {https.Server}
  */
 let httpServer;
-process.env.PORT = process.env.PORT | 443;
 if (process.env.NODE_ENV == 'development') {
     //HTTP/HTTPS server requirements
     const key = fs.readFileSync('encryption/server.key') + '';
@@ -35,7 +33,7 @@ if (process.env.NODE_ENV == 'development') {
         cert: cert,
         ca: ca,
     };
-    httpsServer = https.createServer(httpsOptions, app).listen(process.env.PORT, () => {
+    httpsServer = https.createServer(httpsOptions, app).listen(443, () => {
         console.log('listeneing')
         //loadEvents.set('HTTPS Server', ['HTTPS Server is listening', timerToString(Date.now() - loginStart)]);
         //checkStatus();
@@ -55,8 +53,7 @@ if (process.env.NODE_ENV == 'development') {
         }
     });
     global.hServer = httpServer;
-}
-import mongoDB from './globals/mongoDB.js';
+};
 //Server Routing
 app.use(express.json());
 app.use(express.text());
