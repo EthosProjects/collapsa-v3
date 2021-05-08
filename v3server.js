@@ -43,7 +43,7 @@ if (process.env.NODE_ENV == 'development') {
     global.hServer = httpsServer;
 } else {
     console.log(process.env.PORT);
-    httpServer = http.createServer(app).listen(process.env.PORT, () => {
+    httpServer = http.createServer(app).listen(process.env.PORT, '0.0.0.0', () => {
         console.log('listening')
     });
     app.use(function (req, res, next) {
