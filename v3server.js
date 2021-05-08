@@ -36,14 +36,16 @@ if (process.env.NODE_ENV == 'development') {
         ca: ca,
     };
     httpsServer = https.createServer(httpsOptions, app).listen(process.env.PORT, () => {
+        console.log('listeneing')
         //loadEvents.set('HTTPS Server', ['HTTPS Server is listening', timerToString(Date.now() - loginStart)]);
         //checkStatus();
     });
     global.hServer = httpsServer;
 } else {
     console.log(process.env.PORT);
-    httpServer = http.createServer(app);
-    httpServer.listen(process.env.PORT);
+    httpServer = http.createServer(app).listen(process.env.PORT, () => {
+        console.log('listening')
+    });
     app.use(function (req, res, next) {
         res.setHeader('Strict-Transport-Security', 'max-age=8640000; includeSubDomains');
         if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === 'http') {
