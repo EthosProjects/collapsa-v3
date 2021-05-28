@@ -39,7 +39,7 @@
         <canvas id="ctx"></canvas>
         <button rel="js-downloadButton">Download</button>
         <script>
-            let pixelNum = 128;
+            let pixelNum = 256;
             console.log(pixelNum);
             /**
              * @type {HTMLCanvasElement}
@@ -63,14 +63,14 @@
                     ctx.fillStyle = 'black';
                     ctx.beginPath();
                     ctx.arc(
-                        ((9 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        (-(9 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((8 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((6 / 32) * pixelNum) / 2,
                         0,
                         2 * Math.PI,
                     );
                     ctx.arc(
-                        ((9 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        (-(9 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((-8 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((6 / 32) * pixelNum) / 2,
                         0,
@@ -80,14 +80,14 @@
                     ctx.fillStyle = 'white';
                     ctx.beginPath();
                     ctx.arc(
-                        ((6.5 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        (-(6.5 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((7 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((2.5 / 32) * pixelNum) / 2,
                         0,
                         2 * Math.PI,
                     );
                     ctx.arc(
-                        ((6.5 / 32) * pixelNum) / 2 + pixelNum / 2,
+                        (-(6.5 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((-7 / 32) * pixelNum) / 2 + pixelNum / 2,
                         ((2.5 / 32) * pixelNum) / 2,
                         0,

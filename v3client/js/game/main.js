@@ -36,10 +36,12 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const gl = canvas.getContext('webgl2');
 let setRectangle = (gl, [x, y, width, height], usage) => {
+    console.log(x, y, width, height);
     let x1 = x,
         x2 = x + width,
         y1 = y,
         y2 = y + height;
+    console.log([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]), usage);
 };
 const createShader = (type, source) => {
@@ -74,6 +76,7 @@ class Player {
     /**
      *
      * @param {Object} param0
+     * @param {Number} param0.id
      * @param {Vector} param0.position
      * @param {Vector} param0.velocity
      * @param {String} param0.username
@@ -89,9 +92,14 @@ class Player {
             y: velocity.y,
         };
         this.username = username;
+        this.rotation = 0;
         this.gl = {
             body: {
                 vertexArray: gl.createVertexArray(),
+                texposition: {
+                    buffer: gl.createBuffer(),
+                    attributeLocaton: gl.getAttribLocation(program, 'a_texposition'),
+                },
                 position: {
                     buffer: gl.createBuffer(),
                     attributeLocaton: gl.getAttribLocation(program, 'a_position'),
@@ -108,8 +116,32 @@ class Player {
         };
         gl.bindVertexArray(this.gl.body.vertexArray);
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.texposition.buffer);
+        setRectangle(gl, [-64, -64, 128, 128], gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.gl.body.texposition.attributeLocaton);
+        gl.vertexAttribPointer(this.gl.body.texposition.attributeLocaton, 2, gl.FLOAT, false, 0, 0);
+
         gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.position.buffer);
-        setRectangle(gl, [this.position.x, this.position.y, 128, 128], gl.DYNAMIC_DRAW);
+        //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]), usage);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array([
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+            ]),
+            gl.DYNAMIC_DRAW,
+        );
+        //setRectangle(gl, [64, 64, 128, 128], gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(this.gl.body.position.attributeLocaton);
         gl.vertexAttribPointer(this.gl.body.position.attributeLocaton, 2, gl.FLOAT, false, 0, 0);
 
@@ -117,20 +149,45 @@ class Player {
         setRectangle(gl, [0.0, 0.0, 1.0, 1.0], gl.STATIC_DRAW);
         gl.enableVertexAttribArray(this.gl.body.texcoord.attributeLocaton);
         gl.vertexAttribPointer(this.gl.body.texcoord.attributeLocaton, 2, gl.FLOAT, false, 0, 0);
-        /*
+
         gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.rotation.buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            46 * Math.PI/180, 
-            46 * Math.PI/180, 
-            46 * Math.PI/180, 
-            46 * Math.PI/180, 
-            46 * Math.PI/180,
-            46 * Math.PI/180
-        ]), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 0, 0, 0, 0]), gl.STATIC_DRAW);
         gl.enableVertexAttribArray(this.gl.body.rotation.attributeLocaton);
-        gl.vertexAttribPointer(this.gl.body.rotation.attributeLocaton, 1, gl.FLOAT, false, 0, 0);*/
+        gl.vertexAttribPointer(this.gl.body.rotation.attributeLocaton, 1, gl.FLOAT, false, 0, 0);
     }
     show() {
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.position.buffer);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array([
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+                this.position.x + 64,
+                this.position.y + 64,
+            ]),
+            gl.DYNAMIC_DRAW,
+        );
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.gl.body.rotation.buffer);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array([
+                this.rotation,
+                this.rotation,
+                this.rotation,
+                this.rotation,
+                this.rotation,
+                this.rotation,
+            ]),
+            gl.STATIC_DRAW,
+        );
         gl.bindVertexArray(this.gl.body.vertexArray);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
@@ -174,7 +231,7 @@ let receiveMessage = async (e) => {
         //window.requestAnimationFrame(gameLoop);
     } else messages.push([messageType, messageReader]);
 };
-import { startCapturingInput, stopCapturingInput, movement } from './input.js';
+import { startCapturingInput, stopCapturingInput, movement, checkForInput } from './input.js';
 const startGame = (username) => {
     let bw = new BinaryWriter(17);
     bw.writeUint8(constants.MSG_TYPES.JOIN_GAME, false, 0);
@@ -214,6 +271,7 @@ const startGame = (username) => {
                 }
                 case constants.MSG_TYPES.PLAYER_ID: {
                     playerID = messageReader.readUint8();
+                    console.log(playerID);
                     break;
                 }
                 default: {
@@ -227,6 +285,21 @@ const startGame = (username) => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+        if (checkForInput()) {
+            let bw = new BinaryWriter(9);
+            /*bw.writeUint8(constants.MSG_TYPES.INPUT);
+            bw.writeUint8(movement[0]);
+            bw.writeUint8(movement[1]);
+            bw.writeUint8(movement[2]);
+            bw.writeUint8(movement[3]);
+            bw.writeUint16(movement[4]);
+            bw.writeUint16(movement[5]);
+            ws.send(bw.arrayBuffer);*/
+            let key = movement[0];
+            let angle = (movement[2] * 360) / 255;
+            Players[playerID].rotation = angle;
+        }
+        //console.log(movement)
         //gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
         //setRectangles(gl, [[30, 0, 550, 550]], gl.STATIC_DRAW);
     };
@@ -250,7 +323,12 @@ const startGame = (username) => {
         requestAnimationFrame(loop);
         //console.log('delta', delta, '(target: ' + TICK_LENGTH_MS +' ms)', 'node ticks', ticks)
     };
-    requestAnimationFrame(loop);
+    const preLoop = () => {
+        handleMessages();
+        if (playerID == undefined || Players[playerID] == undefined) requestAnimationFrame(preLoop);
+        else requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(preLoop);
 };
 document.getElementById('enterGameForm').addEventListener('submit', function (e) {
     e.preventDefault();

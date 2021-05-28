@@ -34,33 +34,37 @@ if (process.env.NODE_ENV == 'development') {
         ca: ca,
     };
     httpsServer = https.createServer(httpsOptions, app).listen(443, () => {
-        console.log('listeneing')
+        console.log('listeneing');
         //loadEvents.set('HTTPS Server', ['HTTPS Server is listening', timerToString(Date.now() - loginStart)]);
         //checkStatus();
     });
     global.hServer = httpsServer;
 } else {
     console.log(process.env.PORT);
-    httpServer = http.createServer(app).listen(process.env.PORT, '0.0.0.0', () => {
-        console.log('listening')
+    httpServer = http.createServer(app).listen(process.env.PORT, () => {
+        console.log('listening');
     });
     app.use(function (req, res, next) {
-        res.setHeader('Strict-Transport-Security', 'max-age=8640000; includeSubDomains');
+        /*res.setHeader('Strict-Transport-Security', 'max-age=8640000; includeSubDomains');
         if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === 'http') {
             return res.redirect(301, 'https://' + req.hostname + req.url);
         } else {
             return next();
-        }
+        }*/
+        next();
     });
     global.hServer = httpServer;
-};
+}
+
 //Server Routing
 app.use(express.json());
 app.use(express.text());
 app.use(cors());
 //API
+/*
 import apiRouter from './api/routes/apiRouter.js';
 app.use('/api', apiRouter);
+*/
 //Game related
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const serveDir = (reqPath, searchPath) => {

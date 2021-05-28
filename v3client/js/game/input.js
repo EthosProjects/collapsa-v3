@@ -1,4 +1,8 @@
+/**
+ * @type {Number[]}
+ */
 const movement = [0, 0, 0, 0, 0, 0];
+let previousMovementValues = [...movement];
 let hover = null;
 /*
 {
@@ -148,4 +152,16 @@ const stopCapturingInput = () => {
     document.onkeydown = null;
     document.removeEventListener('keydown', handlekeyDown);
 };
-export { startCapturingInput, movement, stopCapturingInput };
+const checkForInput = () => {
+    let movementValues = [...movement];
+    let sameMovement = true;
+    for (let i = movementValues.length; i--; ) {
+        if (!(movementValues[i] == previousMovementValues[i])) {
+            sameMovement = false;
+            previousMovementValues = [...movement];
+            break;
+        }
+    }
+    return sameMovement;
+};
+export { startCapturingInput, movement, stopCapturingInput, checkForInput };
