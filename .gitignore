@@ -238,7 +238,6 @@ _Pvt_Extensions
 
 # Custom
 env.bat
-native/initializeEnvironment
 astar
 build
 client

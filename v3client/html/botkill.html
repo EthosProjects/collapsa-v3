@@ -1,0 +1,15 @@
+<script>
+    let ws = new WebSocket('wss://localhost/localbot');
+    ws.onopen = () => {
+        console.log('open');
+    };
+    ws.onclose = async () => {
+        console.log('disconnected');
+    };
+    ws.onerror = async (e) => {
+        console.log(e, 'error');
+    };
+    ws.onmessage = function (e) {
+        return false;
+    };
+</script>

@@ -4,6 +4,7 @@ import epoch from './epoch.js';
 
 const serverEpoch = 1613122192045;
 console.log(`It's been ${timerToString(Date.now() - serverEpoch)} since the server epoch`);
+import { mongoDB, startBots, stopBots } from './globals/export.js';
 //Server Requirements
 import path from 'path';
 import fs from 'fs';
@@ -14,6 +15,7 @@ import { fileURLToPath } from 'url';
 //Middleware
 import cors from 'cors';
 import express from 'express';
+import WebSocket from 'ws';
 const app = express();
 /**
  * @type {http.Server}
@@ -55,7 +57,7 @@ if (process.env.NODE_ENV == 'development') {
     });
     global.hServer = httpServer;
 }
-
+//import discordBotClient from './globals/discordBotClient.js';
 //Server Routing
 app.use(express.json());
 app.use(express.text());
@@ -76,6 +78,16 @@ const serveDir = (reqPath, searchPath) => {
         });
 };
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/v3client/html/index.html')));
+/*app.get('/rakurekillhtml', (req, res) => {
+    stopBot();
+    res.send('');
+    res.end();
+});
+app.get('/rakurestarthtml', (req, res) => {
+    startBot();
+    res.send('');
+    res.end();
+});*/
 serveDir('/v3client', '/v3client');
 serveDir('/client', '/client');
 serveDir('/', '/v3client');
@@ -84,5 +96,39 @@ app.use((req, res, next) => {
     res.status(404).sendFile(__dirname + '/v3client/html/404.html');
 });
 //Game Stuff
-import { Game } from './v3lib/Game.js';
+import { Game, Games } from './v3lib/Game.js';
 new Game('usaeast1');
+let wss = new WebSocket.Server({ noServer: true });
+function heartbeat() {
+    this.isAlive = true;
+}
+wss.on('connection', (socket) => {
+    console.log('localbot connected');
+    stopBots();
+    socket.isAlive = true;
+    socket.on('pong', heartbeat);
+    socket.on('close', () => {
+        startBots();
+        console.log('localbot disconnected');
+    });
+});
+const pingPong = setInterval(() => {
+    wss.clients.forEach((ws) => {
+        if (ws.isAlive === false) return ws.terminate();
+        ws.isAlive = false;
+        ws.ping();
+    });
+}, 30000);
+global.hServer.on('upgrade', (request, socket, head) => {
+    if (request.url.match(/^\/games\//)) {
+        if (Games.has(request.url.match(/^\/games\/(.*)/)[1])) {
+            Games.get(request.url.match(/^\/games\/(.*)/)[1]).wss.handleUpgrade(request, socket, head, (ws) => {
+                Games.get(request.url.match(/^\/games\/(.*)/)[1]).wss.emit('connection', ws, request);
+            });
+        } else socket.destroy();
+    } else if (request.url === '/localbot') {
+        wss.handleUpgrade(request, socket, head, (ws) => {
+            wss.emit('connection', ws, request);
+        });
+    } else console.log(request.url);
+});

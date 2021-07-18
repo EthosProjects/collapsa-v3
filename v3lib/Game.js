@@ -3,6 +3,10 @@ import WebSocket from 'ws';
 import { Reader, Writer } from '../v3client/js/game/v3binlingo.js';
 import { NativeGame } from '../native/export.js';
 import { v4 } from 'uuid';
+/**
+ * @type {Map<string, Game>}
+ */
+export const Games = new Map();
 export class Game {
     constructor(link) {
         this.address = 0x00000000;
@@ -12,7 +16,7 @@ export class Game {
         };
         //console.log(this)
         //this.qtree = new QuadTree([0, 0, constants.MAP.WIDTH, constants.MAP.HEIGHT], this);
-        this.wss = new WebSocket.Server({ server: global.hServer, path: '/games/' + link });
+        this.wss = new WebSocket.Server({ noServer: true });
         this.wss.clientMap = new Map();
         this.wss.on('listening', () => {
             console.log(`Game listening with link /games/${link}`);
@@ -22,10 +26,12 @@ export class Game {
         }
         this.messages = [];
         this.wss.on('connection', (socket) => {
+            console.log('connected');
             //Connection centric
             socket.isAlive = true;
             socket.on('pong', heartbeat);
             socket.on('close', () => {
+                console.log('disconnected');
                 /*
                 if (socket.player) {
                     let player = socket.player;
@@ -84,6 +90,39 @@ export class Game {
             }
         };
         loop();
+        Games.set(link, this);
+    }
+}
+NativeGame.bindClassToNative(Game);
+export class stirp {
+    constructor(link) {
+        //console.log(this)
+        //this.qtree = new QuadTree([0, 0, constants.MAP.WIDTH, constants.MAP.HEIGHT], this);
+        let wss = new WebSocket.Server({ server: global.hServer, path: '/games/' + link });
+        wss.on('listening', () => {
+            console.log(`Game listening with link /games/${link}`);
+        });
+        function heartbeat() {
+            this.isAlive = true;
+        }
+        wss.on('connection', (socket) => {
+            console.log('connected');
+            //Connection centric
+            socket.isAlive = true;
+            socket.on('pong', heartbeat);
+            socket.on('close', () => {
+                console.log('disconnected');
+            });
+            //console.log(this)
+            //Game centric
+        });
+        const pingPong = setInterval(() => {
+            wss.clients.forEach((ws) => {
+                if (ws.isAlive === false) return ws.terminate();
+                ws.isAlive = false;
+                ws.ping();
+            });
+        }, 30000);
     }
 }
 NativeGame.bindClassToNative(Game);

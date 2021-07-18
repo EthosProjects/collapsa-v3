@@ -1,0 +1,20 @@
+<html>
+    <head></head>
+    <body onload="doGLDraw();">
+        <canvas id="GLCanvas" width="640" height="480"> </canvas>
+        <script type="x-shader/x-vertex" id="VertexShader">
+            attribute vec3 aSquareVertexPosition;    
+                       void main(void) {        
+                           gl_Position = vec4(aSquareVertexPosition, 1.0);    
+                       }
+        </script>
+        <script type="x-shader/x-fragment" id="FragmentShader">
+            void main(void) {
+                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            }
+        </script>
+        <script type="text/javascript" src="src/VertexBuffer.js"></script>
+        <script type="text/javascript" src="src/ShaderSupport.js"></script>
+        <script type="text/javascript" src="/webgl/src/WebGL.js"></script>
+    </body>
+</html>
