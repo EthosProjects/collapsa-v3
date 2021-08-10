@@ -1,2 +1,2 @@
-import game from './game/main.js';
+import './game/main.js';
 import './drawBackground.js';

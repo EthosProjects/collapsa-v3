@@ -39,7 +39,7 @@
         <canvas id="ctx"></canvas>
         <button rel="js-downloadButton">Download</button>
         <script>
-            let pixelNum = 256;
+            let pixelNum = 512;
             console.log(pixelNum);
             /**
              * @type {HTMLCanvasElement}
@@ -52,6 +52,9 @@
             canvas.height = pixelNum;
             let sprites = {
                 'playerBody.png': () => {
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate(Math.PI);
+                    ctx.translate(-canvas.width / 2, -canvas.height / 2);
                     ctx.fillStyle = 'black';
                     ctx.beginPath();
                     ctx.arc(pixelNum / 2, pixelNum / 2, pixelNum / 2, 0, 2 * Math.PI);

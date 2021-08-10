@@ -28,6 +28,7 @@ const handlekeyUp = (e) => {
     if (key == 82) movement[0] -= 64;
 };
 const handlekeyDown = (e) => {
+    console.log(e);
     //if (e.ctrlKey) return false;
     //      if (movement.chatting) return;
     let key = e.keyCode;
