@@ -4,7 +4,48 @@
 #define COLLAPSA_CONTROLLERS
 namespace Collapsa {
     class Player;
+    namespace Vector {
+        class Double {
+            class Dimension {
+                double value;
+            public:
+                operator double() const { return value; }
+                Dimension& operator+=(const double &rhs) {
+                    value += rhs;
+                    return *this;
+                };
+                Dimension(double t_value): value(t_value) {};
+            };
+            public:
+            Dimension x;
+            Dimension y;
+            Double(double t_x, double t_y): x(t_x), y(t_y) {};
+            Double(const Double &t_double): x(t_double.x), y(t_double.y) {};
+            Double& operator=(const Double &rhs) {
+                x = rhs.x;
+                y = rhs.y;
+                return *this;
+            }; 
+            Double& operator+=(const Double &rhs) {
+                x += rhs.x;
+                y += rhs.y;
+                return *this;
+            };
+            const Double& operator+(const Double &t_double) {
+                return Double(*this) += t_double;
+            };
+            /*
+            const Double operator+ (Double const &other){
+                return Double(v1.x, v1.y);
+            }*/
+        };
+    };
     namespace Position {
+        class Double: public Vector::Double {
+
+        };
+    };
+    namespace PositionOld {
         class Overwrite {
         public:
             int16_t x;
@@ -29,10 +70,10 @@ namespace Collapsa {
                 maxY(255) {};
         };
         class Controller {
+        public:
             int16_t m_x;
             int16_t m_y;
             Options m_options;
-        public:
             virtual int getX() { return m_x; };
             virtual int getY() { return m_y; };
             virtual void setX(int16_t val) { m_x = val; };
@@ -79,27 +120,27 @@ namespace Collapsa {
     namespace Body {
         class IBody {
         public:
-            Position::Overwrite getPosition() { return Position::Overwrite(position.getX(), position.getY()); };
-            void setPosition(Collapsa::Position::Controller newPos) {
-                prevPosition.setX(position.getX());
-                prevPosition.setY(position.getY());
+            PositionOld::Overwrite getPosition() { return PositionOld::Overwrite(position.getX(), position.getY()); };
+            void setPositionOld(Collapsa::PositionOld::Controller newPos) {
+                prevPositionOld.setX(position.getX());
+                prevPositionOld.setY(position.getY());
                 position.setX(newPos.getX());
                 position.setY(newPos.getY());
             };
             IBody() {};
-            IBody(int t_x, int t_y) : position(t_x, t_y), prevPosition(t_x, t_y) {};
-            IBody(Position::Overwrite t_positionOverwrite) : position(t_positionOverwrite), prevPosition(t_positionOverwrite) {};
+            IBody(int t_x, int t_y) : position(t_x, t_y), prevPositionOld(t_x, t_y) {};
+            IBody(PositionOld::Overwrite t_positionOverwrite) : position(t_positionOverwrite), prevPositionOld(t_positionOverwrite) {};
             ~IBody() {};
-        protected:
-            Collapsa::Position::Controller position;
-            Collapsa::Position::Controller prevPosition;
+            Collapsa::PositionOld::Controller position;
+            Collapsa::PositionOld::Controller prevPositionOld;
+            bool hasMoved { 0 };
         };
         class Circle : public IBody {
         protected:
             uint32_t m_radius;
         public:
             Circle(int t_radius): m_radius(t_radius) {};
-            Circle(int t_radius, Position::Overwrite t_positionOverwrite) : IBody(t_positionOverwrite), m_radius(t_radius) {};
+            Circle(int t_radius, PositionOld::Overwrite t_positionOverwrite) : IBody(t_positionOverwrite), m_radius(t_radius) {};
             ~Circle() {};
             uint32_t getRadius() { return m_radius; };
         };

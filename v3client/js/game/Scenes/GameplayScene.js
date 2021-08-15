@@ -4,18 +4,13 @@ import SceneFileParser from '/js/RenderingEngine/util/SceneFileParser.js';
 import { Reader as BinaryReader, Writer as BinaryWriter } from '../v3binlingo.js';
 import constants from '../constants.js';
 import { Player } from '../Entities/exports.js';
-console.log('sus', RenderingEngine);
 window.playerID = null;
+import { ws } from '../connect.js';
 export default class GameplayScene extends Scene {
     constructor() {
         super();
         this._sceneFile = '/xml/scenes/gameplayScene.xml';
-        this._imageAssets = [
-            '/assets/minion_portal.png',
-            '/assets/minion_collector.png',
-            '/assets/Consolas-72.png',
-            '/assets/minion_sprite.png',
-        ];
+        this._imageAssets = [];
         /**
          * @type {[number, BinaryReader][]}
          */
@@ -32,7 +27,6 @@ export default class GameplayScene extends Scene {
             RenderingEngine.Resources.Texture.unload(this._imageAssets[i]);
     }
     initialize() {
-        this._camera = 'fuck';
         let sceneParser = new SceneFileParser(this._sceneFile);
         this._camera = sceneParser.parseCamera();
         this._renderables = sceneParser.parseRenderables();
@@ -84,14 +78,14 @@ export default class GameplayScene extends Scene {
         if (!this.mainPlayer) return;
         if (hasChanged()) {
             let bw = new BinaryWriter(9);
-            /*bw.writeUint8(constants.MSG_TYPES.INPUT);
-            bw.writeUint8(movement[0]);
-            bw.writeUint8(movement[1]);
-            bw.writeUint8(movement[2]);
-            bw.writeUint8(movement[3]);
-            bw.writeUint16(movement[4]);
-            bw.writeUint16(movement[5]);
-            ws.send(bw.arrayBuffer);*/
+            bw.writeUint8(constants.MSG_TYPES.INPUT);
+            bw.writeUint8(gameMovement[0]);
+            bw.writeUint8(gameMovement[1]);
+            bw.writeUint8(gameMovement[2]);
+            bw.writeUint8(gameMovement[3]);
+            bw.writeUint16(gameMovement[4]);
+            bw.writeUint16(gameMovement[5]);
+            ws.send(bw.arrayBuffer);
             let key = gameMovement[0];
             let angle = (gameMovement[2] * 360) / 255;
             this.mainPlayer._renderable._transform.setRotationInDegree(angle);
@@ -107,7 +101,7 @@ export default class GameplayScene extends Scene {
         this._camera._center = new Float32Array(this.mainPlayer._renderable._transform.position);
         // Step A: clear the canvas
         RenderingEngine.Core.resizeCanvas(this._camera);
-        RenderingEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
+        RenderingEngine.Core.clearCanvas([0.95, 0.95, 0.95, 1.0]); // clear to light gray
         this._camera.setupViewProjection();
         this._entities.draw(this._camera);
         // Step  B: Activate the drawing Camera

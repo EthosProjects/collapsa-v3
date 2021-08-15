@@ -6,18 +6,18 @@ let isRunning = false;
 let sceneRunning = null;
 let previousTime;
 let frames = 0;
-let displayingFrame = false;
+let renderingFrame = false;
 let run = () => {
     if (!isRunning) return;
-    if (displayingFrame) console.log('oof');
-    displayingFrame = true;
+    if (renderingFrame) console.trace('Frame warping');
+    renderingFrame = true;
     let now = Date.now();
     let delta = (now - previousTime) / 1000;
     previousTime = now;
     sceneRunning.update(delta);
     sceneRunning.draw();
     frames++;
-    displayingFrame = false;
+    renderingFrame = false;
     requestAnimationFrame(run);
 };
 let readyScene = () => {

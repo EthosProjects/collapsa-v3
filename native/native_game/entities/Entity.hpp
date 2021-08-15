@@ -2,6 +2,9 @@
 #include "../include.hpp"
 #include "../Controllers.hpp"
 namespace Collapsa {
+    namespace quadtree {
+        class Quadtree;
+    };
     class Game;
     class Entity {
     public:

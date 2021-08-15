@@ -72,6 +72,8 @@ namespace Collapsa {
     };
     class Game {
     protected:
+        void _outputMessage(OutputMessage* t_p_outputMessage);
+        void _inputMessage(InputMessage* t_p_inputMessage);
         std::atomic<bool> m_running;
         std::vector<InputMessage*> m_p_inputMessages;
         std::vector<OutputMessage*> m_p_outputMessages;
@@ -81,6 +83,7 @@ namespace Collapsa {
         std::thread m_loopThread;
         Player* m_Players[constants::PLAYER::LIMIT] { nullptr };
         Entity* m_entities[constants::PLAYER::LIMIT] { nullptr };
+        friend void Player::populateViewport();
     public:
         int playerCount;
         quadtree::Quadtree m_quadtree;
@@ -89,7 +92,7 @@ namespace Collapsa {
             std::cout << "Game destroyed" << std::endl;
         }
         void readMessages();
-        void update();
+        void update(long long t_delta);
         void startLoop();
         void stopLoop();
         void loop();
