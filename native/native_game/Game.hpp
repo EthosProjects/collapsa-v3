@@ -1,4 +1,3 @@
-#pragma once
 //#include "../native_emitter/NativeEmitter.hpp"
 #include "entities/Player.hpp"
 #include "quadtree/Quadtree.hpp"
@@ -18,7 +17,7 @@ namespace Collapsa {
         OutputMessage(uint8_t* t_buffer, uint32_t t_byteLength, std::string t_socketid): BinaryInterface(t_buffer, t_byteLength), socketid(t_socketid) {};
         ~OutputMessage(){
             delete[] buffer;
-            std::cout << "Destructed output message and freed buffer\n";
+            //std::cout << "Destructed output message and freed buffer\n";
         }
     };
     class InputMessage: public BinaryInterface {
@@ -27,7 +26,7 @@ namespace Collapsa {
         InputMessage(uint8_t* t_buffer, uint32_t t_byteLength, std::string t_socketid): BinaryInterface(t_buffer, t_byteLength), socketid(t_socketid) {};
         ~InputMessage(){
             delete[] buffer;
-            std::cout << "Destructed input message and freed buffer\n";
+            //std::cout << "Destructed input message and freed buffer\n";
         }
     };
     class Reader: public BinaryInterface {
@@ -72,8 +71,9 @@ namespace Collapsa {
     };
     class Game {
     protected:
-        void _outputMessage(OutputMessage* t_p_outputMessage);
-        void _inputMessage(InputMessage* t_p_inputMessage);
+    public:
+        void pushOutputMessage(OutputMessage* t_p_outputMessage);
+        void pushInputMessage(InputMessage* t_p_inputMessage);
         std::atomic<bool> m_running;
         std::vector<InputMessage*> m_p_inputMessages;
         std::vector<OutputMessage*> m_p_outputMessages;
@@ -81,12 +81,11 @@ namespace Collapsa {
         std::mutex m_p_outputMessages_mutex;
         std::map<std::string, Player*> m_p_socketPlayerMap;
         std::thread m_loopThread;
-        Player* m_Players[constants::PLAYER::LIMIT] { nullptr };
-        Entity* m_entities[constants::PLAYER::LIMIT] { nullptr };
-        friend void Player::populateViewport();
-    public:
+        Player* array_p_players[constants::PLAYER::LIMIT] { nullptr };
+        Entity* array_p_entities[constants::PLAYER::LIMIT] { nullptr };
+        friend void Player::updateViewport();
         int playerCount;
-        quadtree::Quadtree m_quadtree;
+        quadtree::Quadtree qtree;
         Game(); 
         ~Game(){
             std::cout << "Game destroyed" << std::endl;

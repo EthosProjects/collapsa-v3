@@ -46,7 +46,7 @@ export class Game {
             socket.id = socketID;
             this.wss.clientMap.set(socketID, socket);
             socket.on('message', (m) => {
-                console.log(new Uint8Array(m).buffer);
+                //console.log(new Uint8Array(m).buffer);
                 this.writeMessage(new Uint8Array(m).buffer, socket);
             });
         });

@@ -23,6 +23,6 @@ namespace constants {
     };
     namespace PLAYER {
         constexpr int TYPE = 1;
-        constexpr int LIMIT = 65536;
+        constexpr int LIMIT = 255;
     };
 };

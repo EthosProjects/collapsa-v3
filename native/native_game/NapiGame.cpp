@@ -35,7 +35,7 @@ namespace Collapsa {
         };
         uint8_t* arrayBufferData = reinterpret_cast<uint8_t*>(message.Data());
         for (size_t i = 0; i < inputMessage->byteLength; ++i) inputMessage->buffer[i] = arrayBufferData[i];
-        _inputMessage(inputMessage);
+        pushInputMessage(inputMessage);
         return env.Undefined();
     };
     Napi::Value NapiGame::getMessages(const Napi::CallbackInfo& info){
