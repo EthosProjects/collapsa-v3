@@ -54,6 +54,7 @@ export const connect = (reconnectAttempt) =>
             }
             reconnectAttempts = 0;
             if (!resolved) resolve(true);
+            window.location.reload();
             resolved = true;
             new Alert('Reconnected successfully', 'success');
             //ws.removeEventListener('message', receiveSocketID);

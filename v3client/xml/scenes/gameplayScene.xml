@@ -11,6 +11,7 @@
         Viewport="0 0 1920 1080"
         BgColor="0.8 0.8 0.8 1.0"
     />
+    <Square renderable="true" renderingInfo="768 768 1536 1536 0" color="0.0039 0.3411 0.1059 1"/> 
     <!-- Squares Rotation is in degree -->
     <!--
     <Square renderable="true" renderingInfo="20 60 3 3 0" color="0 0 1 1"/> 

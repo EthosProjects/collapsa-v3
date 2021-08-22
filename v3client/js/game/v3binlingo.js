@@ -109,6 +109,14 @@ class Reader extends binInterface {
         return this.dataView.getUint8(this.viewIndex - 1);
     }
     /**
+     * Reads an Int8
+     * @returns {Number}
+     */
+    readInt8() {
+        this.viewIndex++;
+        return this.dataView.getInt8(this.viewIndex - 1);
+    }
+    /**
      * Reads a Uint16
      * @returns {Number}
      */

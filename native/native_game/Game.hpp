@@ -54,6 +54,7 @@ namespace Collapsa {
             return *this;
         };
         Writer& writeUint8(uint8_t uint8, bool littleEndian = false) { buffer[index] = uint8; ++index; return *this; };
+        Writer& writeInt8(int8_t int8, bool littleEndian = false) { buffer[index] = static_cast<uint8_t>(int8); ++index; return *this; };
         Writer& writeUint16(uint16_t uint16, bool littleEndian = false) {
             buffer[index] = (0xff & uint16) * littleEndian + ((0xff00 & uint16) >> 8) * !littleEndian;
             buffer[index+1] = ((0xff00 & uint16) >> 8) * littleEndian + (0xff & uint16) * !littleEndian;

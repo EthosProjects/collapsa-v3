@@ -1,5 +1,9 @@
+import { BaseRenderable } from '../Renderables/exports.js';
 export default class BaseEntity {
     constructor(renderable) {
+        /**
+         * @type {BaseRenderable}
+         */
         this._renderable = renderable;
     }
     get transform() {

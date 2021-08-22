@@ -2,9 +2,9 @@ export default class EntitySet extends Map {
     constructor(iteratable) {
         super(iteratable);
     }
-    update() {
+    update(delta) {
         for (const [id, entity] of this) {
-            entity.update();
+            entity.update(delta);
         }
     }
     draw(camera) {

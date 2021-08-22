@@ -30,9 +30,6 @@ export default class GameplayScene extends Scene {
         let sceneParser = new SceneFileParser(this._sceneFile);
         this._camera = sceneParser.parseCamera();
         this._renderables = sceneParser.parseRenderables();
-        for (let i = 0; i < this._renderables.length; i++) {
-            this._entities.set(i * 50, this._renderables[i]);
-        }
     }
     readMessages() {
         if (this._messages.length == 0) return;
@@ -44,6 +41,7 @@ export default class GameplayScene extends Scene {
                     for (let i = 0; i < playerCount; i++) {
                         let player = new Player({
                             id: messageReader.readUint8(),
+                            rotation: messageReader.readUint8(),
                             position: {
                                 x: messageReader.readUint16(),
                                 y: messageReader.readUint16(),
@@ -57,6 +55,33 @@ export default class GameplayScene extends Scene {
                         this._entities.set((constants.PLAYER.TYPE << 8) + player.id, player);
                         this.mainPlayer = this._entities.get((constants.PLAYER.TYPE << 8) + playerID);
                         //Players[player.id] = player;
+                    }
+                    break;
+                }
+                case constants.MSG_TYPES.REMOVE_ENTITY: {
+                    const playerCount = messageReader.readUint8();
+                    for (let i = 0; i < playerCount; i++) {
+                        this._entities.delete((constants.PLAYER.TYPE << 8) + messageReader.readUint8());
+                    }
+                    break;
+                }
+                case constants.MSG_TYPES.GAME_UPDATE: {
+                    const playerCount = messageReader.readUint8();
+                    for (let i = 0; i < playerCount; i++) {
+                        const update = {
+                            id: messageReader.readUint8(),
+                            rotation: messageReader.readUint8(),
+                            position: {
+                                x: messageReader.readUint16(),
+                                y: messageReader.readUint16(),
+                            },
+                            velocity: {
+                                x: messageReader.readInt8(),
+                                y: messageReader.readInt8(),
+                            },
+                        };
+                        const player = this._entities.get((constants.PLAYER.TYPE << 8) + update.id);
+                        player.pushUpdate(update);
                     }
                     break;
                 }
@@ -90,10 +115,12 @@ export default class GameplayScene extends Scene {
             let angle = (gameMovement[2] * 360) / 255;
             this.mainPlayer._renderable._transform.setRotationInDegree(angle);
         }
-        if (gameMovement[0] & 1) this.mainPlayer._position.y += 10 * delta;
-        if (gameMovement[0] & 4) this.mainPlayer._position.y -= 10 * delta;
-        if (gameMovement[0] & 8) this.mainPlayer._position.x += 10 * delta;
-        if (gameMovement[0] & 2) this.mainPlayer._position.x -= 10 * delta;
+        if (gameMovement[0] & 1) this.mainPlayer.clientView.velocity.y = 10;
+        if (gameMovement[0] & 4) this.mainPlayer.clientView.velocity.y = -10;
+        if (gameMovement[0] & 8) this.mainPlayer.clientView.velocity.x = 10;
+        if (gameMovement[0] & 2) this.mainPlayer.clientView.velocity.x = -10;
+
+        //console.log(this.mainPlayer._velocity.x, )
         this._entities.update(delta);
     }
     draw() {
@@ -103,6 +130,7 @@ export default class GameplayScene extends Scene {
         RenderingEngine.Core.resizeCanvas(this._camera);
         RenderingEngine.Core.clearCanvas([0.95, 0.95, 0.95, 1.0]); // clear to light gray
         this._camera.setupViewProjection();
+        for (let i = 0; i < this._renderables.length; i++) this._renderables[i].draw(this._camera);
         this._entities.draw(this._camera);
         // Step  B: Activate the drawing Camera
         window.opener++;

@@ -10,3 +10,8 @@
 #include <string>
 #include <atomic>
 #include <set>
+#include <functional>
+#include <initializer_list>
+#include <memory>
+#include <mutex>
+#include <vector>

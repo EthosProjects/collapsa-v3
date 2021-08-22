@@ -8,24 +8,35 @@ namespace Collapsa {
         class Double {
             class Dimension {
                 double value;
+                double minimum { 0 };
+                double maximum { 0 };
+                void bound () { if(maximum != minimum) value = std::max(minimum, std::min(maximum, value)); };
             public:
                 operator double() const { return value; }
-                Dimension& operator+=(const double &rhs) { value += rhs; return *this; };
-                Dimension& operator-=(const double &rhs) { value -= rhs; return *this; };
-                Dimension& operator*=(const double &rhs) { value *= rhs; return *this; };
-                Dimension& operator/=(const double &rhs) { value /= rhs; return *this; };
+                Dimension& operator=(const double &rhs) { value = rhs; bound(); return *this; };
+                Dimension& operator+=(const double &rhs) { value += rhs; bound(); return *this; };
+                Dimension& operator-=(const double &rhs) { value -= rhs; bound(); return *this; };
+                Dimension& operator*=(const double &rhs) { value *= rhs; bound(); return *this; };
+                Dimension& operator/=(const double &rhs) { value /= rhs; bound(); return *this; };
+                Dimension(double t_value, double t_max, double t_min): value(t_value), minimum(t_max), maximum(t_min) {};
                 Dimension(double t_value): value(t_value) {};
             };
             public:
             Dimension x;
             Dimension y;
             Double(double t_x, double t_y): x(t_x), y(t_y) {};
+            Double(
+                double t_x, double t_y, 
+                double t_minX, double t_maxX,
+                double t_minY, double t_maxY): x(t_x, t_minX, t_maxX), y(t_y, t_minY, t_maxY) {};
             Double(const Double &t_double): x(t_double.x), y(t_double.y) {};
             Double& operator=(const Double &rhs) { x = rhs.x; y = rhs.y; return *this; }; 
             Double& operator+=(const Double &rhs) { x += rhs.x; y += rhs.y; return *this; };
             Double& operator-=(const Double &rhs) { x -= rhs.x; y -= rhs.y; return *this; };
             Double& operator*=(const Double &rhs) { x *= rhs.x; y *= rhs.y; return *this; };
             Double& operator/=(const Double &rhs) { x /= rhs.x; y /= rhs.y; return *this; };
+            bool operator==(const Double &d) { return x == d.x && y == d.y; };
+            bool operator!=(const Double &d) { return x != d.x || y != d.y; };
             const Double& operator+(const Double &t_double) { return Double(*this) += t_double; };
         };
     };
@@ -65,11 +76,12 @@ namespace Collapsa {
         class IBody {
         public:
         Vector::Double position;
+        Vector::Double velocity { 0, 0 };
         Vector::Double previousPosition;
             IBody(int t_x, int t_y) : position(t_x, t_y), previousPosition(t_x, t_y) {};
             IBody(Vector::Double t_position) : position(t_position), previousPosition(t_position) {};
             ~IBody() {};
-            bool hasMoved { 0 };
+            bool hasMoved { true };
         };
         class Circle : public IBody {
         public:

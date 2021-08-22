@@ -53,6 +53,7 @@ namespace Collapsa {
                     player->movement[2] = pMessage->buffer[3];
                     player->movement[3] = pMessage->buffer[4];
                     player->movement[4] = pMessage->buffer[5];
+                    player->p_body->hasMoved = true;
                     break;
                 } 
                 default: {
@@ -69,7 +70,7 @@ namespace Collapsa {
         while(m_running){
             auto currentFrame = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(currentFrame - lastFrame).count();
-            if (elapsed < 100000) continue;
+            if (elapsed < 1'000'000) continue;
             readMessages();
             update(elapsed);
             //std::cout << elapsed << " microseconds were updated\n";
@@ -87,30 +88,30 @@ namespace Collapsa {
             if (player == nullptr) continue;
             player->update(t_delta);
         }
+        bool hasMovement = false;
+        int canSee[constants::PLAYER::LIMIT] { 0 };
+        
         for (int i = 0;i < constants::PLAYER::LIMIT;i++){
             Player* player = array_p_players[i];
             if (player == nullptr) continue;
-            if (!player->p_body->hasMoved) continue;
-            qtree.clear();
-            for(int i = 0;i < constants::PLAYER::LIMIT;i++){
-                player = array_p_players[i];
-                if (player == nullptr) continue;
-                qtree.insert(player);
-            }
-            for(int i = 0;i < constants::PLAYER::LIMIT;i++){
-                player = array_p_players[i];
-                if (player == nullptr) continue;
-                player->updateViewport();
-                player->p_body->hasMoved = false;
-            }
-            break;
+            if (player->p_body->hasMoved) { 
+                hasMovement = true;
+                break;
+            } 
+        }
+        if (!hasMovement) return;
+        qtree.clear();
+        for(int i = 0;i < constants::PLAYER::LIMIT;i++){
+            Player* player = array_p_players[i];
+            if (player == nullptr) continue;
+            qtree.insert(player);
+        }
+        for(int i = 0;i < constants::PLAYER::LIMIT;i++){
+            Player* player = array_p_players[i];
+            if (player == nullptr) continue;
+            player->updateViewport();
+            player->p_body->hasMoved = false;
         }
     };
-    Game::Game(): 
-        qtree(0, 0, 256, 256),
-        playerCount(0)
-    {
-        for(size_t i = 0; i < 255; i++) array_p_players[i] = nullptr;
-        startLoop();
-    };
+    Game::Game(): qtree(0, 0, 2047, 2047), playerCount(0) { startLoop(); };
 }
