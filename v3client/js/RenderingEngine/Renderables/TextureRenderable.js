@@ -12,8 +12,8 @@ export default class TextureRenderable extends BaseRenderable {
      *
      * @param {Camera} camera
      */
-    draw(camera) {
+    draw(camera, matrix) {
         RenderingEngine.Resources.Texture.activate(this._texture);
-        BaseRenderable.prototype.draw.call(this, camera);
+        BaseRenderable.prototype.draw.call(this, camera, matrix);
     }
 }

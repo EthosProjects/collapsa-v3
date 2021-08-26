@@ -1,6 +1,7 @@
 /**
  * @typedef {[red:number, green:number, blue:number, alpha:number]} Color
  */
+import { mat4 } from '../../glMatrix/index.js';
 import Camera from '../Camera.js';
 import Transform from '../Transform.js';
 export default class BaseRenderable {
@@ -20,11 +21,16 @@ export default class BaseRenderable {
     /**
      *
      * @param {Camera} camera
+     * @param {matrix}
      */
-    draw(camera) {
+    draw(camera, matrix) {
+        if (!matrix) matrix = mat4.create();
         const webgl = RenderingEngine.Core.webgl;
         this._shader.activate(this.color, camera.vpMatrix);
-        this._shader.loadObjectTransform(this._transform.getMatrix());
+        let transformationMatrix = this._transform.getMatrix();
+        let objectTransform = mat4.create();
+        mat4.multiply(objectTransform, matrix, transformationMatrix);
+        this._shader.loadObjectTransform(objectTransform);
         webgl.drawArrays(webgl.TRIANGLE_STRIP, 0, 4);
     }
 }

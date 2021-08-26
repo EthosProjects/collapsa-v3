@@ -125,7 +125,11 @@ export default class GameplayScene extends Scene {
     }
     draw() {
         if (!this.mainPlayer) return;
-        this._camera._center = new Float32Array(this.mainPlayer._renderable._transform.position);
+        const resolution = this._camera._width / 320;
+        this._camera._center = new Float32Array([
+            this.mainPlayer.clientView.position.x * resolution,
+            this.mainPlayer.clientView.position.y * resolution,
+        ]);
         // Step A: clear the canvas
         RenderingEngine.Core.resizeCanvas(this._camera);
         RenderingEngine.Core.clearCanvas([0.95, 0.95, 0.95, 1.0]); // clear to light gray
