@@ -20,6 +20,7 @@ namespace constants {
         constexpr uint8_t DROPPED_ITEMS_REMOVE = 17;
         constexpr uint8_t ACTION_KEY = 18;
         constexpr uint8_t PLAYER_ID = 19;
+        constexpr uint8_t PLAYER_VISUAL = 20;
     };
     namespace PLAYER {
         constexpr int TYPE = 1;

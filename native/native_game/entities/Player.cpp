@@ -26,6 +26,36 @@ namespace Collapsa {
         playerIDs = playerIds;
         return change;
     };
+    std::set<int>* Player::Viewport::animate() {
+        Entity** t_entities = p_game->array_p_entities;
+        std::set<int>* animations = new std::set<int>[1];
+        for (int ID: playerIDs) if(p_game->array_p_players[ID]->animated) animations[0].insert(ID);
+        return animations;
+    };
+    void Player::animateViewport() {
+        std::set<int>* animations = viewport.animate();
+        if ((animations[0].size()) == 0){
+            delete[] animations;
+            return;
+        };
+        // 00000000 00000000 00000000
+        // PlayerID Rotation Item    
+        constexpr uint16_t playerAnimationSize = 3;
+        uint32_t animationSize = 2 + animations[0].size() * playerAnimationSize;
+        OutputMessage *animationMessage = new OutputMessage { 
+            new uint8_t[animationSize]{ 0 }, animationSize, socketid
+        };
+        Writer w { animationMessage->buffer, animationMessage->byteLength };
+        w.writeUint8(constants::MSG_TYPES::PLAYER_VISUAL).writeUint8(animations[0].size());
+        for (int ID: animations[0]) {
+            Player* player = p_game->array_p_players[ID];
+            w.writeUint8(player->id)
+                .writeUint8(player->movement[2])
+                .writeUint8(player->movement[1]);
+        };
+        p_game->pushOutputMessage(animationMessage);
+        delete[] animations;
+    }
     void Player::updateViewport() { 
         int** viewportChange = viewport.update(); 
         int change[1][2] { 0 };
@@ -72,9 +102,9 @@ namespace Collapsa {
         };
         delete [] viewportChange[0];
         delete [] viewportChange;
-        // 00000000 00000000 0000000000000000 0000000000000000 00000000 00000000
-        // PlayerID Rotation XPosition        YPosition        XVel     YVel    
-        constexpr uint16_t updatePlayerSize = 1 + 1 + 2 + 2 + 1 + 1;
+        // 00000000 0000000000000000 0000000000000000 00000000 00000000
+        // PlayerID XPosition        YPosition        XVel     YVel    
+        constexpr uint16_t updatePlayerSize = 1 + 2 + 2 + 1 + 1;
         uint32_t updateSize = 1 + 1 + viewport.playerIDs.size() * updatePlayerSize;
         if (updateSize > 2) {
             OutputMessage *updateMessage = new OutputMessage {
@@ -85,7 +115,6 @@ namespace Collapsa {
             for(int ID: viewport.playerIDs) {
                 Player* player = p_game->array_p_players[ID];
                 w.writeUint8(player->id)
-                    .writeUint8(player->movement[2])
                     .writeUint16(player->p_body->position.x, false)
                     .writeUint16(player->p_body->position.y, false)
                     .writeUint8(player->p_body->velocity.x * 1'000'000)

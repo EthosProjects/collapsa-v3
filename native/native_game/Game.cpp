@@ -48,6 +48,8 @@ namespace Collapsa {
                 case constants::MSG_TYPES::INPUT: {
                     Player* player = m_p_socketPlayerMap[pMessage->socketid];
                     if(!player) break;
+                    if (player->movement[2] != pMessage->buffer[2]) player->animated = true;
+                    if (player->movement[1] != pMessage->buffer[1]) player->animated = true;
                     player->movement[0] = pMessage->buffer[1];
                     player->movement[1] = pMessage->buffer[2];
                     player->movement[2] = pMessage->buffer[3];
@@ -55,7 +57,7 @@ namespace Collapsa {
                     player->movement[4] = pMessage->buffer[5];
                     player->p_body->hasMoved = true;
                     break;
-                } 
+                }
                 default: {
                     std::cout << "Unknown Message " << (int) pMessage->buffer[0] << std::endl;
                 }
@@ -70,7 +72,7 @@ namespace Collapsa {
         while(m_running){
             auto currentFrame = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(currentFrame - lastFrame).count();
-            if (elapsed < 1'000'000) continue;
+            if (elapsed < 16'000) continue;
             readMessages();
             update(elapsed);
             //std::cout << elapsed << " microseconds were updated\n";
@@ -90,27 +92,37 @@ namespace Collapsa {
         }
         bool hasMovement = false;
         int canSee[constants::PLAYER::LIMIT] { 0 };
-        
         for (int i = 0;i < constants::PLAYER::LIMIT;i++){
             Player* player = array_p_players[i];
             if (player == nullptr) continue;
             if (player->p_body->hasMoved) { 
                 hasMovement = true;
                 break;
-            } 
+            }
         }
-        if (!hasMovement) return;
-        qtree.clear();
+        if (hasMovement) {
+            qtree.clear();
+            for(int i = 0;i < constants::PLAYER::LIMIT;i++){
+                Player* player = array_p_players[i];
+                if (player == nullptr) continue;
+                qtree.insert(player);
+            }
+            for(int i = 0;i < constants::PLAYER::LIMIT;i++){
+                Player* player = array_p_players[i];
+                if (player == nullptr) continue;
+                player->updateViewport();
+                player->p_body->hasMoved = false;
+            }
+        };
         for(int i = 0;i < constants::PLAYER::LIMIT;i++){
             Player* player = array_p_players[i];
             if (player == nullptr) continue;
-            qtree.insert(player);
-        }
+            player->animateViewport();
+        };
         for(int i = 0;i < constants::PLAYER::LIMIT;i++){
             Player* player = array_p_players[i];
             if (player == nullptr) continue;
-            player->updateViewport();
-            player->p_body->hasMoved = false;
+            player->animated = false;
         }
     };
     Game::Game(): qtree(0, 0, 2047, 2047), playerCount(0) { startLoop(); };

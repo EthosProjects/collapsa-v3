@@ -52,6 +52,7 @@ export default class GameplayScene extends Scene {
                             },
                             username: messageReader.readString(16),
                         });
+
                         this._entities.set((constants.PLAYER.TYPE << 8) + player.id, player);
                         this.mainPlayer = this._entities.get((constants.PLAYER.TYPE << 8) + playerID);
                         //Players[player.id] = player;
@@ -70,7 +71,6 @@ export default class GameplayScene extends Scene {
                     for (let i = 0; i < playerCount; i++) {
                         const update = {
                             id: messageReader.readUint8(),
-                            rotation: messageReader.readUint8(),
                             position: {
                                 x: messageReader.readUint16(),
                                 y: messageReader.readUint16(),
@@ -82,6 +82,22 @@ export default class GameplayScene extends Scene {
                         };
                         const player = this._entities.get((constants.PLAYER.TYPE << 8) + update.id);
                         player.pushUpdate(update);
+                    }
+                    break;
+                }
+                case constants.MSG_TYPES.PLAYER_VISUAL: {
+                    const playerCount = messageReader.readUint8();
+                    for (let i = 0; i < playerCount; i++) {
+                        const update = {
+                            id: messageReader.readUint8(),
+                            rotation: messageReader.readUint8(),
+                            hands: {
+                                id: 0,
+                                active: messageReader.readUint8(),
+                            },
+                        };
+                        const player = this._entities.get((constants.PLAYER.TYPE << 8) + update.id);
+                        player.animateUpdate(update);
                     }
                     break;
                 }

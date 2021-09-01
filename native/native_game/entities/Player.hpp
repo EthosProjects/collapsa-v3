@@ -13,6 +13,7 @@ namespace Collapsa {
             int height { 0 };
             std::set<int> playerIDs;
             int** update ();
+            std::set<int>* animate ();
             Viewport (Game* t_p_game): p_game(t_p_game) {};
         };
         Viewport viewport;
@@ -21,6 +22,8 @@ namespace Collapsa {
         void populateAABB(int* x1, int* y1, int* x2, int* y2) override;
         void update(long long t_nanoseconds);
         void updateViewport();
+        void animateViewport();
         int8_t movement[5] { 0 };
+        bool animated { 0 };
     };
 }

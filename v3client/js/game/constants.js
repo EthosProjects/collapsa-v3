@@ -42,6 +42,7 @@ const constants = {
         DROPPED_ITEMS_REMOVE: 17,
         ACTION_KEY: 18,
         PLAYER_ID: 19,
+        PLAYER_VISUAL: 20,
     },
     PLAYER: {
         TYPE: 0,
