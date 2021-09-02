@@ -7,10 +7,10 @@ namespace Collapsa {
     int** Player::Viewport::update() {
         Entity** t_entities = p_game->array_p_entities;
         std::set<int> entityIDs = p_game->qtree.query(
-            center.x - width/2,
-            center.y - height/2,
-            center.x + width/2,
-            center.y + height/2
+            (double) center.x - width/2,
+            (double) center.y - height/2,
+            (double) center.x + width/2,
+            (double) center.y + height/2
         );
         //std::cout << center.x - 160 << "  " << center.y - 90 << "  " << center.x + 160 << "  " << center.y + 90 << std::endl;
         std::set<int> playerIds;
@@ -78,11 +78,11 @@ namespace Collapsa {
                 if (viewportChange[0][i] < 1) continue;
                 Player* player = p_game->array_p_players[i];
                 w.writeUint8(player->id)
-                    .writeUint8(player->movement[2])
-                    .writeUint16(player->p_body->position.x, false)
-                    .writeUint16(player->p_body->position.y, false)
-                    .writeInt8(player->p_body->velocity.x * 1'000'000)
-                    .writeInt8(player->p_body->velocity.y * 1'000'000)
+                    .writeUint8(player->movement[2 ])
+                    .writeUint16((double) player->p_body->position.x, false)
+                    .writeUint16((double) player->p_body->position.y, false)
+                    .writeInt8((double) player->p_body->velocity.x * 1'000'000)
+                    .writeInt8((double) player->p_body->velocity.y * 1'000'000)
                     .writeString(player->username, 16);
             };
             p_game->pushOutputMessage(addEntitiesMessage);
@@ -96,7 +96,7 @@ namespace Collapsa {
             for (int i = 0; i < constants::PLAYER::LIMIT;i++) {
                 if (viewportChange[0][i] > -1) continue;
                 Player* player = p_game->array_p_players[i];
-                w.writeUint8(player->id);
+                w.writeUint8(i);
             };
             p_game->pushOutputMessage(removeEntitiesMessage);
         };
@@ -115,16 +115,16 @@ namespace Collapsa {
             for(int ID: viewport.playerIDs) {
                 Player* player = p_game->array_p_players[ID];
                 w.writeUint8(player->id)
-                    .writeUint16(player->p_body->position.x, false)
-                    .writeUint16(player->p_body->position.y, false)
-                    .writeUint8(player->p_body->velocity.x * 1'000'000)
-                    .writeUint8(player->p_body->velocity.y * 1'000'000);
+                    .writeUint16((double) player->p_body->position.x, false)
+                    .writeUint16((double) player->p_body->position.y, false)
+                    .writeUint8((double) player->p_body->velocity.x * 1'000'000)
+                    .writeUint8((double) player->p_body->velocity.y * 1'000'000);
             };
             p_game->pushOutputMessage(updateMessage);
         };
     };
     Player::Player(Game* t_p_game, std::string t_socketid, std::string t_username, int t_id, int t_entityid):
-        Entity(Health::Options(0, 100), t_p_game, t_entityid),
+        Entity(Health(0, 20), t_p_game, t_entityid),
         socketid(t_socketid),
         username(t_username),
         viewport(t_p_game)
@@ -137,10 +137,10 @@ namespace Collapsa {
         this->id = t_id;
     };
     void Player::populateAABB(int* x1, int* y1, int* x2, int* y2) {
-        *x1 = p_body->position.x - 16;
-        *y1 = p_body->position.y - 16;
-        *x2 = p_body->position.x + 16;
-        *y2 = p_body->position.y + 16;
+        *x1 = (double) p_body->position.x - 16;
+        *y1 = (double) p_body->position.y - 16;
+        *x2 = (double) p_body->position.x + 16;
+        *y2 = (double) p_body->position.y + 16;
     };
     void Player::update(long long t_delta) {
         const Vector::Double nullvelocity { 0, 0 };
@@ -157,8 +157,8 @@ namespace Collapsa {
             //std::cout << t_delta * speed << " " << t_delta << " " << speed << " " << p_body->hasMoved << "\n";
         }
         if (!(p_body->velocity == Vector::Double {0, 0})) p_body->hasMoved = true;
-        p_body->position.x += p_body->velocity.x * t_delta;
-        p_body->position.y += p_body->velocity.y * t_delta;
+        p_body->position.x += (double) p_body->velocity.x * t_delta;
+        p_body->position.y += (double) p_body->velocity.y * t_delta;
         viewport.center = p_body->position;
     };
 }

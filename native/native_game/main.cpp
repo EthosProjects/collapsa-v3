@@ -1,6 +1,7 @@
 #include "NativeGame.hpp"
 using namespace Collapsa;
 void testQuadTree() {
+	
 	quadtree::Quadtree qtree{ 0, 0, 16384, 16384 };
 	constexpr int playerCount = 655,
 		testCount = 1000;
@@ -27,7 +28,15 @@ void testQuadTree() {
 }
 int main() {
 	NativeGame* game = new NativeGame();
-	game->stopLoop();
-	testQuadTree();
-	//	std::this_thread::sleep_for(std::chrono::seconds(30));
+	using namespace std::chrono_literals;
+	//std::this_thread::sleep_for(2000ms);
+	game->pushInputMessage(new InputMessage(new uint8_t[1]{constants::MSG_TYPES::JOIN_GAME}, 1, "a"));
+	std::this_thread::sleep_for(2000ms);
+	game->pushInputMessage(new InputMessage(new uint8_t[1]{constants::MSG_TYPES::JOIN_GAME}, 1, "b"));
+	std::this_thread::sleep_for(2000ms);
+	game->pushInputMessage(new InputMessage(new uint8_t[9]{ 9, 0, 0, 107, 122, 1, 88, 1, 82 }, 9, "b"));
+	std::this_thread::sleep_for(2000ms);
+	game->pushInputMessage(new InputMessage(new uint8_t[9]{ 9, 0, 1, 107, 122, 1, 88, 1, 82 }, 9, "b"));
+	//testQuadTree();
+	std::this_thread::sleep_for(std::chrono::seconds(30));
 };

@@ -65,7 +65,7 @@ namespace Collapsa {
             buffer[index] = (0xff & uint32) * littleEndian + ((0xff000000 & uint32) >> 24) * !littleEndian;
             buffer[index+1] = ((0xff00 & uint32) >> 8) * littleEndian + ((0xff0000 & uint32) >> 16) * !littleEndian;
             buffer[index+2] = ((0xff0000 & uint32) >> 16) * littleEndian + ((0xff00 & uint32) >> 8) * !littleEndian;
-            buffer[index+3] = ((0xff000000 & uint32) >> 32) * littleEndian + (0xff & uint32) * !littleEndian;
+            buffer[index+3] = ((0xff000000 & uint32) >> 24) * littleEndian + (0xff & uint32) * !littleEndian;
             index += 4;
             return *this;
         };

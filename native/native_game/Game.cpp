@@ -48,8 +48,36 @@ namespace Collapsa {
                 case constants::MSG_TYPES::INPUT: {
                     Player* player = m_p_socketPlayerMap[pMessage->socketid];
                     if(!player) break;
-                    if (player->movement[2] != pMessage->buffer[2]) player->animated = true;
-                    if (player->movement[1] != pMessage->buffer[1]) player->animated = true;
+                    if (player->movement[1] != pMessage->buffer[2]) {
+                        player->animated = true;
+                        double angleInRadians = pMessage->buffer[3] * 6.28 / 255;
+                        Vector::Double handVector{ std::cos(angleInRadians) * 20.48, std::sin(angleInRadians) * 20.48 };
+                        Vector::Double targetPosition{ (double) player->p_body->position.x + (double) handVector.x, (double)player->p_body->position.y + (double)handVector.y };
+                        if (pMessage->buffer[2] == 1) {
+                            std::cout << player->p_body->position << " " 
+                            << handVector << " " 
+                            << targetPosition << " " 
+                            << (double) handVector.x + (double) player->p_body->position.x << " "
+                            << (double) handVector.y + (double) player->p_body->position.y << " "
+                            << '\n';
+                        }
+                        std::set<int> toHit = qtree.query(
+                            (double) targetPosition.x - 4.8,
+                            (double) targetPosition.y - 4.8,
+                            (double) targetPosition.x + 4.8,
+                            (double) targetPosition.y + 4.8
+                        );
+                        for (int ID: toHit) {
+                            if(ID == player->entityid) continue;
+                            Entity* entity = array_p_entities[ID];
+                            switch(entity->is) {
+                                case constants::PLAYER::TYPE: {
+                                    entity->health -= 5;
+                                }
+                            }
+                        }
+                    }
+                    if (player->movement[2] != pMessage->buffer[3]) player->animated = true;
                     player->movement[0] = pMessage->buffer[1];
                     player->movement[1] = pMessage->buffer[2];
                     player->movement[2] = pMessage->buffer[3];
@@ -95,13 +123,24 @@ namespace Collapsa {
         for (int i = 0;i < constants::PLAYER::LIMIT;i++){
             Player* player = array_p_players[i];
             if (player == nullptr) continue;
-            if (player->p_body->hasMoved) { 
+            if (player->p_body->hasMoved || player->health == 0) { 
                 hasMovement = true;
                 break;
             }
         }
         if (hasMovement) {
             qtree.clear();
+            for(int i = 0;i < constants::PLAYER::LIMIT;i++){
+                Player* player = array_p_players[i];
+                if (player == nullptr) continue;
+                if (player->health == 0) {
+                    pushOutputMessage(new OutputMessage { 
+                        new uint8_t[1]{ constants::MSG_TYPES::GAME_OVER }, 1, player->socketid
+                    });
+                    delete player;
+                    array_p_players[i] = nullptr;
+                }
+            };
             for(int i = 0;i < constants::PLAYER::LIMIT;i++){
                 Player* player = array_p_players[i];
                 if (player == nullptr) continue;

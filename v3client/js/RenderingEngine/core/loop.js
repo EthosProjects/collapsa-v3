@@ -8,7 +8,11 @@ let previousTime;
 let frames = 0;
 let renderingFrame = false;
 let run = () => {
-    if (!isRunning) return;
+    if (!isRunning) {
+        sceneRunning.unload();
+        sceneRunning = null;
+        return;
+    }
     if (renderingFrame) console.trace('Frame warping');
     renderingFrame = true;
     let now = Date.now();

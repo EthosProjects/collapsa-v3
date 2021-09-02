@@ -13,7 +13,7 @@ const Text = {
             resolve();
         });
     },
-    unload: (fileName) => gEngine.ResourceMap.unloadAsset(fileName),
+    unload: (fileName) => RenderingEngine.Resources.unload(fileName),
     FileType: Object.freeze({
         XMLFile: 0,
         TextFile: 1,

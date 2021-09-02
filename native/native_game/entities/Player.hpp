@@ -3,7 +3,6 @@
 class Circle;
 namespace Collapsa {
     class Player: public Entity {
-        std::string socketid;
         std::string username;
         class Viewport {
             Game* p_game;
@@ -18,6 +17,7 @@ namespace Collapsa {
         };
         Viewport viewport;
     public:
+        std::string socketid;
         Player(Game* t_p_game, std::string t_socketid, std::string t_username, int t_id, int t_entityid);
         void populateAABB(int* x1, int* y1, int* x2, int* y2) override;
         void update(long long t_nanoseconds);

@@ -3,18 +3,18 @@
 #include "../Controllers.hpp"
 namespace Collapsa {
     namespace quadtree {
-        class Quadtree;
+        struct Quadtree;
     };
     class Game;
     class Entity {
     public:
-        Health::Controller health;
+        Health health;
         Body::IBody* p_body;
         volatile int is;
     protected:
         Game * p_game;
     public:
-        Entity(Health::Options t_healthOptions, Game* t_p_game, int t_entityid): 
+        Entity(Health t_healthOptions, Game* t_p_game, int t_entityid): 
             health(t_healthOptions),
             p_game(t_p_game),
             entityid(t_entityid)

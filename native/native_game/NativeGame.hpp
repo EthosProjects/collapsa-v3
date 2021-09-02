@@ -15,9 +15,9 @@ namespace Collapsa {
         };
         void quickSert(int a) {
             Player* newPlayer = new Player(this, std::string{ "" }, std::string{ "" }, a, a);
-            m_Players[a] = newPlayer;
-            m_entities[a] = newPlayer;
-            m_quadtree.insert(newPlayer);
+            array_p_players[a] = newPlayer;
+            array_p_entities[a] = newPlayer;
+            qtree.insert(newPlayer);
         };
     };
 };

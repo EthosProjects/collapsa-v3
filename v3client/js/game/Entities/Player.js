@@ -74,7 +74,7 @@ export default class Player extends BaseEntity {
     }
     animateUpdate({ rotation, hands }) {
         this._renderable._transform.setRotationInDegree((rotation * 360) / 255);
-        //this.serverView.hands.id = hands.id;
+        this.serverView.hands.id = hands.id;
         if (hands.active == 0) {
             this.serverView.hands.rate = 0;
         } else {

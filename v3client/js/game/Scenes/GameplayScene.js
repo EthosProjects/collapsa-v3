@@ -20,11 +20,16 @@ export default class GameplayScene extends Scene {
     load() {
         RenderingEngine.Resources.Text.load(this._sceneFile, RenderingEngine.Resources.Text.FileType.XMLFile);
         for (let i = 0; i < this._imageAssets.length; i++) RenderingEngine.Resources.Texture.load(this._imageAssets[i]);
+        document.querySelector('[rel=js-titleScreen]').style.display = 'none';
+        RenderingEngine.Core.resizeCanvas();
+        RenderingEngine.Core.canvas.style.display = 'block';
     }
     unload() {
         RenderingEngine.Resources.Text.unload(this._sceneFile); // Game loop not running, unload all assets
         for (let i = 0; i < this._imageAssets.length; i++)
             RenderingEngine.Resources.Texture.unload(this._imageAssets[i]);
+        document.querySelector('[rel=js-titleScreen]').style.display = 'block';
+        RenderingEngine.Core.canvas.style.display = 'none';
     }
     initialize() {
         let sceneParser = new SceneFileParser(this._sceneFile);
@@ -52,7 +57,6 @@ export default class GameplayScene extends Scene {
                             },
                             username: messageReader.readString(16),
                         });
-
                         this._entities.set((constants.PLAYER.TYPE << 8) + player.id, player);
                         this.mainPlayer = this._entities.get((constants.PLAYER.TYPE << 8) + playerID);
                         //Players[player.id] = player;
@@ -106,6 +110,9 @@ export default class GameplayScene extends Scene {
                     this.mainPlayer = this._entities.get((constants.PLAYER.TYPE << 8) + playerID);
                     break;
                 }
+                case constants.MSG_TYPES.GAME_OVER: {
+                    RenderingEngine.Loop.stop();
+                }
                 default: {
                     console.log(`Unknown message type: ${messageType}`);
                 }
@@ -131,12 +138,12 @@ export default class GameplayScene extends Scene {
             let angle = (gameMovement[2] * 360) / 255;
             this.mainPlayer._renderable._transform.setRotationInDegree(angle);
         }
+        let angle = (gameMovement[2] * 360) / 255;
+        this.mainPlayer._renderable._transform.setRotationInDegree(angle);
         if (gameMovement[0] & 1) this.mainPlayer.clientView.velocity.y = 10;
         if (gameMovement[0] & 4) this.mainPlayer.clientView.velocity.y = -10;
         if (gameMovement[0] & 8) this.mainPlayer.clientView.velocity.x = 10;
         if (gameMovement[0] & 2) this.mainPlayer.clientView.velocity.x = -10;
-
-        //console.log(this.mainPlayer._velocity.x, )
         this._entities.update(delta);
     }
     draw() {
