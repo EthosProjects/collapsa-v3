@@ -6,6 +6,7 @@ namespace Collapsa {
         struct Quadtree;
     };
     class Game;
+    class Writer;
     class Entity {
     public:
         Health health;

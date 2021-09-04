@@ -30,7 +30,7 @@ namespace Collapsa {
                     uint8_t playerIndex = 0,
                         entityIndex = 0;
                     while(playerIndex < constants::PLAYER::LIMIT){ if(array_p_players[playerIndex] == nullptr) break; ++playerIndex; };
-                    while(entityIndex < constants::PLAYER::LIMIT){ if(array_p_entities[entityIndex] == nullptr) break; ++entityIndex; };
+                    while(entityIndex < constants::ENTITY::LIMIT){ if(array_p_entities[entityIndex] == nullptr) break; ++entityIndex; };
                     pushOutputMessage(new OutputMessage { 
                         new uint8_t[2]{ constants::MSG_TYPES::PLAYER_ID, playerIndex }, 
                         2,
@@ -50,29 +50,24 @@ namespace Collapsa {
                     if(!player) break;
                     if (player->movement[1] != pMessage->buffer[2]) {
                         player->animated = true;
-                        double angleInRadians = pMessage->buffer[3] * 6.28 / 255;
-                        Vector::Double handVector{ std::cos(angleInRadians) * 20.48, std::sin(angleInRadians) * 20.48 };
-                        Vector::Double targetPosition{ (double) player->p_body->position.x + (double) handVector.x, (double)player->p_body->position.y + (double)handVector.y };
                         if (pMessage->buffer[2] == 1) {
-                            std::cout << player->p_body->position << " " 
-                            << handVector << " " 
-                            << targetPosition << " " 
-                            << (double) handVector.x + (double) player->p_body->position.x << " "
-                            << (double) handVector.y + (double) player->p_body->position.y << " "
-                            << '\n';
-                        }
-                        std::set<int> toHit = qtree.query(
-                            (double) targetPosition.x - 4.8,
-                            (double) targetPosition.y - 4.8,
-                            (double) targetPosition.x + 4.8,
-                            (double) targetPosition.y + 4.8
-                        );
-                        for (int ID: toHit) {
-                            if(ID == player->entityid) continue;
-                            Entity* entity = array_p_entities[ID];
-                            switch(entity->is) {
-                                case constants::PLAYER::TYPE: {
-                                    entity->health -= 5;
+                            double angleInRadians = pMessage->buffer[3] * 6.28 / 255;
+                            Vector::Double handVector{ std::cos(angleInRadians) * 20.48, std::sin(angleInRadians) * 20.48 };
+                            Vector::Double targetPosition{ (double) player->p_body->position.x + (double) handVector.x, (double)player->p_body->position.y + (double)handVector.y };
+                            std::set<int> toHit = qtree.query(
+                                (double) targetPosition.x - 4.8,
+                                (double) targetPosition.y - 4.8,
+                                (double) targetPosition.x + 4.8,
+                                (double) targetPosition.y + 4.8
+                            );
+                            for (int ID: toHit) {
+                                if(ID == player->entityid) continue;
+                                Entity* entity = array_p_entities[ID];
+                                switch(entity->is) {
+                                    case constants::PLAYER::TYPE: 
+                                        Player* playerToHit = (Player*) entity;
+                                        entity->health -= 2.5;
+                                        break;
                                 }
                             }
                         }
@@ -123,28 +118,17 @@ namespace Collapsa {
         for (int i = 0;i < constants::PLAYER::LIMIT;i++){
             Player* player = array_p_players[i];
             if (player == nullptr) continue;
-            if (player->p_body->hasMoved || player->health == 0) { 
+            if (player->p_body->hasMoved || player->health == 0) {
                 hasMovement = true;
                 break;
             }
         }
         if (hasMovement) {
             qtree.clear();
-            for(int i = 0;i < constants::PLAYER::LIMIT;i++){
-                Player* player = array_p_players[i];
-                if (player == nullptr) continue;
-                if (player->health == 0) {
-                    pushOutputMessage(new OutputMessage { 
-                        new uint8_t[1]{ constants::MSG_TYPES::GAME_OVER }, 1, player->socketid
-                    });
-                    delete player;
-                    array_p_players[i] = nullptr;
-                }
-            };
-            for(int i = 0;i < constants::PLAYER::LIMIT;i++){
-                Player* player = array_p_players[i];
-                if (player == nullptr) continue;
-                qtree.insert(player);
+            for(int i = 0;i < constants::ENTITY::LIMIT;i++){
+                Entity* entity = array_p_entities[i];
+                if (entity == nullptr) continue;
+                if (entity->health != 0) qtree.insert(entity);
             }
             for(int i = 0;i < constants::PLAYER::LIMIT;i++){
                 Player* player = array_p_players[i];
@@ -162,7 +146,25 @@ namespace Collapsa {
             Player* player = array_p_players[i];
             if (player == nullptr) continue;
             player->animated = false;
+            if (player->health == 0) {
+                pushOutputMessage(new OutputMessage { 
+                    new uint8_t[1]{ constants::MSG_TYPES::GAME_OVER }, 1, player->socketid
+                });
+                array_p_players[player->id] = nullptr;
+                array_p_entities[player->entityid] = nullptr;
+                delete player;
+            }
         }
     };
-    Game::Game(): qtree(0, 0, 2047, 2047), playerCount(0) { startLoop(); };
+    Game::Game(): qtree(0, 0, 2047, 2047), playerCount(0) {
+        uint8_t treeIndex = 0,
+            entityIndex = 0;
+        while(treeIndex < constants::PLAYER::LIMIT){ if(array_p_trees[treeIndex] == nullptr) break; ++treeIndex; };
+        while(entityIndex < constants::ENTITY::LIMIT){ if(array_p_entities[entityIndex] == nullptr) break; ++entityIndex; };
+        Tree* newTree = new Tree(this, treeIndex, entityIndex);
+        array_p_trees[treeIndex] = newTree;
+        array_p_entities[entityIndex] = newTree;
+        qtree.insert(newTree);
+        startLoop(); 
+    };
 }

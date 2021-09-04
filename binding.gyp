@@ -21,10 +21,11 @@
             "cflags_cc!": [ "-fno-exceptions" ],
             "sources": [ 
                 "native/native_game/quadtree/Quadtree.cpp",
+                "native/native_game/entities/Player.cpp",
+                "native/native_game/entities/Tree.cpp",
                 "native/native_game/Game.cpp",
                 "native/native_game/NapiGame.cpp",
                 "native/native_game/binding.cpp",
-                "native/native_game/entities/Player.cpp",
             ],
             "include_dirs": [
                 "<!@(node -p \"require('node-addon-api').include\")"

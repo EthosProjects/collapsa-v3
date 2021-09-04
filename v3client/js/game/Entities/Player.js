@@ -4,6 +4,7 @@ import Camera from '../../RenderingEngine/Camera.js';
 import { mat4 } from '../../glMatrix/index.js';
 export default class Player extends BaseEntity {
     constructor({ id, position, velocity, username }) {
+        console.log(arguments);
         super(new TextureRenderable('/img/playerBody.png'));
         /**
          * @type {TextureRenderable[]}
@@ -122,8 +123,9 @@ export default class Player extends BaseEntity {
             serverView.position.x * resolution,
             serverView.position.y * resolution,
         ]);
+        /*
         this._renderable.color = [0, 0, 1, 1];
-        this._renderable.draw(camera);
+        this._renderable.draw(camera);*/
         this._renderable.color = [0, 0, 0, 0];
         bodyTransform.position = new Float32Array([
             clientView.position.x * resolution,

@@ -38,6 +38,7 @@ export default class GameplayScene extends Scene {
     }
     readMessages() {
         if (this._messages.length == 0) return;
+        console.log(this._messages);
         for (let i = 0; i < this._messages.length; i++) {
             const [messageType, messageReader] = this._messages[i];
             switch (messageType) {
@@ -66,6 +67,7 @@ export default class GameplayScene extends Scene {
                 case constants.MSG_TYPES.REMOVE_ENTITY: {
                     const playerCount = messageReader.readUint8();
                     for (let i = 0; i < playerCount; i++) {
+                        console.log(messageReader.uint8Array[1 + i]);
                         this._entities.delete((constants.PLAYER.TYPE << 8) + messageReader.readUint8());
                     }
                     break;
@@ -84,7 +86,9 @@ export default class GameplayScene extends Scene {
                                 y: messageReader.readInt8(),
                             },
                         };
+                        console.log(update.id);
                         const player = this._entities.get((constants.PLAYER.TYPE << 8) + update.id);
+                        if (!player) continue;
                         player.pushUpdate(update);
                     }
                     break;

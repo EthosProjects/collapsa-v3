@@ -26,4 +26,11 @@ namespace constants {
         constexpr int TYPE = 1;
         constexpr int LIMIT = 255;
     };
+    namespace TREE {
+        constexpr int TYPE = 2;
+        constexpr int LIMIT = 50;
+    };
+    namespace ENTITY {
+        constexpr int LIMIT = PLAYER::LIMIT + TREE::LIMIT;
+    }
 };

@@ -13,17 +13,25 @@ namespace Collapsa {
             (double) center.y + height/2
         );
         //std::cout << center.x - 160 << "  " << center.y - 90 << "  " << center.x + 160 << "  " << center.y + 90 << std::endl;
-        std::set<int> playerIds;
+        std::set<int> currentPlayerIDs;
+        std::set<int> currentTreeIDs;
         for (int entityID: entityIDs) {
             Entity* entity = t_entities[entityID];
-            if(entity->is == constants::PLAYER::TYPE) playerIds.insert(entity->id);
+            //std::cout << entity->id << " " << entity->entityid << " " << entity->is<< "\n";
+            if(entity->is == constants::PLAYER::TYPE) currentPlayerIDs.insert(entity->id);
+            if(entity->is == constants::TREE::TYPE) currentTreeIDs.insert(entity->id);
         };
-        int** change = new int* [1] {
-            new int [constants::PLAYER::LIMIT] { 0 }
+        //std::cout << "Imposter\n";
+        int** change = new int* [2] {
+            new int [constants::PLAYER::LIMIT] { 0 },
+            new int [constants::TREE::LIMIT] { 0 }
         };
-        for (int ID: playerIds) change[0][ID]+= change[0][ID] < 1;
-        for (int ID: playerIDs) change[0][ID]-= change[0][ID] > -1;
-        playerIDs = playerIds;
+        for (int ID: currentPlayerIDs) change[0][ID] += change[0][ID] < 1;
+        for (int ID: playerIDs) change[0][ID] -= change[0][ID] > -1;
+        for (int ID: currentTreeIDs) change[1][ID] += change[1][ID] < 1;
+        for (int ID: treeIDs) change[1][ID] -= change[1][ID] > -1;
+        playerIDs = currentPlayerIDs;
+        treeIDs = currentTreeIDs;
         return change;
     };
     std::set<int>* Player::Viewport::animate() {
@@ -76,14 +84,7 @@ namespace Collapsa {
             w.writeUint8(constants::MSG_TYPES::ADD_ENTITY).writeUint8(change[0][0]);
             for (int i = 0; i < constants::PLAYER::LIMIT;i++) {
                 if (viewportChange[0][i] < 1) continue;
-                Player* player = p_game->array_p_players[i];
-                w.writeUint8(player->id)
-                    .writeUint8(player->movement[2 ])
-                    .writeUint16((double) player->p_body->position.x, false)
-                    .writeUint16((double) player->p_body->position.y, false)
-                    .writeInt8((double) player->p_body->velocity.x * 1'000'000)
-                    .writeInt8((double) player->p_body->velocity.y * 1'000'000)
-                    .writeString(player->username, 16);
+                p_game->array_p_players[i]->writeMessage(w, constants::MSG_TYPES::ADD_ENTITY);
             };
             p_game->pushOutputMessage(addEntitiesMessage);
         };
@@ -95,8 +96,7 @@ namespace Collapsa {
             w.writeUint8(constants::MSG_TYPES::REMOVE_ENTITY).writeUint8(change[0][1]);
             for (int i = 0; i < constants::PLAYER::LIMIT;i++) {
                 if (viewportChange[0][i] > -1) continue;
-                Player* player = p_game->array_p_players[i];
-                w.writeUint8(i);
+                p_game->array_p_players[i]->writeMessage(w, constants::MSG_TYPES::REMOVE_ENTITY);
             };
             p_game->pushOutputMessage(removeEntitiesMessage);
         };
@@ -112,14 +112,7 @@ namespace Collapsa {
             };
             Writer w { updateMessage->buffer, updateMessage->byteLength };
             w.writeUint8(constants::MSG_TYPES::GAME_UPDATE).writeUint8(viewport.playerIDs.size());
-            for(int ID: viewport.playerIDs) {
-                Player* player = p_game->array_p_players[ID];
-                w.writeUint8(player->id)
-                    .writeUint16((double) player->p_body->position.x, false)
-                    .writeUint16((double) player->p_body->position.y, false)
-                    .writeUint8((double) player->p_body->velocity.x * 1'000'000)
-                    .writeUint8((double) player->p_body->velocity.y * 1'000'000);
-            };
+            for(int ID: viewport.playerIDs) p_game->array_p_players[ID]->writeMessage(w, constants::MSG_TYPES::GAME_UPDATE);
             p_game->pushOutputMessage(updateMessage);
         };
     };
@@ -160,5 +153,28 @@ namespace Collapsa {
         p_body->position.x += (double) p_body->velocity.x * t_delta;
         p_body->position.y += (double) p_body->velocity.y * t_delta;
         viewport.center = p_body->position;
+    };
+    void Player::writeMessage(Writer& t_writer, uint8_t t_messageType) {
+        switch(t_messageType) {
+            case constants::MSG_TYPES::ADD_ENTITY: 
+                t_writer.writeUint8(id)
+                    .writeUint8(movement[2])
+                    .writeUint16((double) p_body->position.x, false)
+                    .writeUint16((double) p_body->position.y, false)
+                    .writeInt8((double) p_body->velocity.x * 1'000'000)
+                    .writeInt8((double) p_body->velocity.y * 1'000'000)
+                    .writeString(username, 16);
+                break;
+            case constants::MSG_TYPES::REMOVE_ENTITY:
+                t_writer.writeUint8(id);
+                break;
+            case constants::MSG_TYPES::GAME_UPDATE:
+                t_writer.writeUint8(id)
+                    .writeUint16((double) p_body->position.x, false)
+                    .writeUint16((double) p_body->position.y, false)
+                    .writeUint8((double) p_body->velocity.x * 1'000'000)
+                    .writeUint8((double) p_body->velocity.y * 1'000'000);
+                break;
+        }
     };
 }

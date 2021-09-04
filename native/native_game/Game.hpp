@@ -1,5 +1,6 @@
 //#include "../native_emitter/NativeEmitter.hpp"
 #include "entities/Player.hpp"
+#include "entities/Tree.hpp"
 #include "quadtree/Quadtree.hpp"
 #include "constants.hpp"
 #define LITTLE_ENDIAN false;
@@ -83,7 +84,8 @@ namespace Collapsa {
         std::map<std::string, Player*> m_p_socketPlayerMap;
         std::thread m_loopThread;
         Player* array_p_players[constants::PLAYER::LIMIT] { nullptr };
-        Entity* array_p_entities[constants::PLAYER::LIMIT] { nullptr };
+        Tree* array_p_trees[constants::TREE::LIMIT] { nullptr };
+        Entity* array_p_entities[constants::PLAYER::LIMIT + constants::TREE::LIMIT] { nullptr };
         friend void Player::updateViewport();
         int playerCount;
         quadtree::Quadtree qtree;
