@@ -4,7 +4,6 @@ import Camera from '../../RenderingEngine/Camera.js';
 import { mat4 } from '../../glMatrix/index.js';
 export default class Player extends BaseEntity {
     constructor({ id, position, velocity, username }) {
-        console.log(arguments);
         super(new TextureRenderable('/img/playerBody.png'));
         /**
          * @type {TextureRenderable[]}
@@ -89,9 +88,9 @@ export default class Player extends BaseEntity {
     assertPosition() {
         const { serverView, clientView } = this;
         let minX = 16;
-        let maxX = 239;
+        let maxX = 1007;
         let minY = 16;
-        let maxY = 239;
+        let maxY = 1007;
         if (serverView.position.x < minX) serverView.position.x = minX;
         if (serverView.position.y < minY) serverView.position.y = minY;
         if (clientView.position.x < minX) clientView.position.x = minX;

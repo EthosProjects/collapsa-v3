@@ -24,11 +24,11 @@ namespace constants {
     };
     namespace PLAYER {
         constexpr int TYPE = 1;
-        constexpr int LIMIT = 255;
+        constexpr int LIMIT = 63;
     };
     namespace TREE {
         constexpr int TYPE = 2;
-        constexpr int LIMIT = 50;
+        constexpr int LIMIT = 127;
     };
     namespace ENTITY {
         constexpr int LIMIT = PLAYER::LIMIT + TREE::LIMIT;

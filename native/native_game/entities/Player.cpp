@@ -1,7 +1,7 @@
 #include "Player.hpp"
 #include "../Game.hpp"
 std::default_random_engine generator;
-std::uniform_int_distribution<int> distribution(16, 110);
+std::uniform_int_distribution<int> distribution(16, 1007);
 auto ranPos = std::bind(distribution, generator);
 namespace Collapsa {
     int** Player::Viewport::update() {
@@ -66,16 +66,21 @@ namespace Collapsa {
     }
     void Player::updateViewport() { 
         int** viewportChange = viewport.update(); 
-        int change[1][2] { 0 };
+        int change[2][2] { 0 };
         for (int i = 0; i < constants::PLAYER::LIMIT;i++) {
             change[0][0] += (viewportChange[0][i] == 1);
             change[0][1] += (viewportChange[0][i] == -1);
         }
+        for (int i = 0; i < constants::TREE::LIMIT;i++) {
+            change[1][0] += (viewportChange[1][i] == 1);
+            change[1][1] += (viewportChange[1][i] == -1);
+        }
         // 00000000 00000000 0000000000000000 0000000000000000 00000000 00000000 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
         // PlayerID Rotation XPosition        YPosition        XVel     YVel     Username
         constexpr uint16_t newPlayerSize = 1 + 1 + 2 + 2 + 1 + 1 + 16;
-        uint32_t addSize = 2 + change[0][0] * newPlayerSize;
-        uint32_t removeSize = 2 + change[0][1] * 1;
+        constexpr uint16_t newTreeSize = 1 + 2 + 2;
+        uint32_t addSize = 3 + change[0][0] * newPlayerSize + change[1][0] * newTreeSize;
+        uint32_t removeSize = 3 + change[0][1] * 1 + change[1][1] * 1;
         if (addSize > 2) {
             OutputMessage *addEntitiesMessage = new OutputMessage { 
                 new uint8_t[addSize]{ 0 }, addSize, socketid
@@ -85,6 +90,11 @@ namespace Collapsa {
             for (int i = 0; i < constants::PLAYER::LIMIT;i++) {
                 if (viewportChange[0][i] < 1) continue;
                 p_game->array_p_players[i]->writeMessage(w, constants::MSG_TYPES::ADD_ENTITY);
+            };
+            w.writeUint8(change[1][0]);
+            for (int i = 0; i < constants::TREE::LIMIT;i++) {
+                if (viewportChange[1][i] < 1) continue;
+                p_game->array_p_trees[i]->writeMessage(w, constants::MSG_TYPES::ADD_ENTITY);
             };
             p_game->pushOutputMessage(addEntitiesMessage);
         };
@@ -97,6 +107,11 @@ namespace Collapsa {
             for (int i = 0; i < constants::PLAYER::LIMIT;i++) {
                 if (viewportChange[0][i] > -1) continue;
                 p_game->array_p_players[i]->writeMessage(w, constants::MSG_TYPES::REMOVE_ENTITY);
+            };
+            w.writeUint8(change[1][1]);
+            for (int i = 0; i < constants::TREE::LIMIT;i++) {
+                if (viewportChange[1][i] > -1) continue;
+                p_game->array_p_trees[i]->writeMessage(w, constants::MSG_TYPES::REMOVE_ENTITY);
             };
             p_game->pushOutputMessage(removeEntitiesMessage);
         };
@@ -123,7 +138,7 @@ namespace Collapsa {
         viewport(t_p_game)
     {
         is = constants::PLAYER::TYPE;
-        p_body = new Body::Circle(32, Vector::Double(ranPos(), ranPos(), 16, 239, 16, 239));
+        p_body = new Body::Circle(32, Vector::Double(ranPos(), ranPos(), 16, 1007, 16, 1007));
         viewport.center = p_body->position;
         viewport.width = 320;
         viewport.height = 180;

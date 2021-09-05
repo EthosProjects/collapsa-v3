@@ -8,7 +8,7 @@ import { ws, connect } from './connect.js';
 import GameplayScene from './Scenes/GameplayScene.js';
 await connect();
 const assets = {};
-const ASSET_NAMES = ['/img/playerBody.png', '/img/playerHand.png'];
+const ASSET_NAMES = ['/img/playerBody.png', '/img/playerHand.png', '/img/tree/tree-1080.png'];
 //const downloadPromise = Promise.all(ASSET_NAMES.map(downloadAsset));
 function downloadAsset(assetName) {
     return new Promise((resolve) => {

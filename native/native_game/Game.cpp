@@ -156,15 +156,17 @@ namespace Collapsa {
             }
         }
     };
-    Game::Game(): qtree(0, 0, 2047, 2047), playerCount(0) {
-        uint8_t treeIndex = 0,
-            entityIndex = 0;
-        while(treeIndex < constants::PLAYER::LIMIT){ if(array_p_trees[treeIndex] == nullptr) break; ++treeIndex; };
-        while(entityIndex < constants::ENTITY::LIMIT){ if(array_p_entities[entityIndex] == nullptr) break; ++entityIndex; };
-        Tree* newTree = new Tree(this, treeIndex, entityIndex);
-        array_p_trees[treeIndex] = newTree;
-        array_p_entities[entityIndex] = newTree;
-        qtree.insert(newTree);
+    Game::Game(): qtree(0, 0, 1023, 1023), playerCount(0) {
+        for (int i = 0; i < constants::TREE::LIMIT;i++) {
+            uint8_t treeIndex = 0,
+                entityIndex = 0;
+            while(treeIndex < constants::PLAYER::LIMIT){ if(array_p_trees[treeIndex] == nullptr) break; ++treeIndex; };
+            while(entityIndex < constants::ENTITY::LIMIT){ if(array_p_entities[entityIndex] == nullptr) break; ++entityIndex; };
+            Tree* newTree = new Tree(this, treeIndex, entityIndex);
+            array_p_trees[treeIndex] = newTree;
+            array_p_entities[entityIndex] = newTree;
+            qtree.insert(newTree);
+        }
         startLoop(); 
     };
 }
