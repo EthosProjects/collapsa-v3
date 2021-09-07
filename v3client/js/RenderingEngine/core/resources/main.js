@@ -50,8 +50,7 @@ RenderingEngine.Resources = {
 };
 const { Text: TextResource } = await import('./text.js'),
     { Texture: TextureResource } = await import('./texture.js'),
-    { Font: FontResource } = await import('./font.js'),
-    { globals } = await import('./globals.js');
+    { Font: FontResource } = await import('./font.js');
 RenderingEngine.Resources = {
     waitForLoad,
     completeLoad,
@@ -63,5 +62,17 @@ RenderingEngine.Resources = {
     Text: TextResource,
     Texture: TextureResource,
     Font: FontResource,
-    globals,
+};
+RenderingEngine.Resources = {
+    waitForLoad,
+    completeLoad,
+    loadPromise: undefined,
+    loadingAssets: false,
+    isLoaded,
+    unload,
+    retrieve,
+    Text: TextResource,
+    Texture: TextureResource,
+    Font: FontResource,
+    globals: (await import('./globals.js')).globals,
 };

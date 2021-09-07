@@ -3,14 +3,6 @@
         Viewport="0 0 960 540"
         BgColor="0.8 0.8 0.8 1.0"
     />
-    <Camera CenterX="20" CenterY="60" Width="20"
-        Viewport="20 40 600 300"
-        BgColor="0.8 0.8 0.8 1.0"
-    />
-    <Camera CenterX="0" CenterY="0" Width="1080"
-        Viewport="0 0 1920 1080"
-        BgColor="0.8 0.8 0.8 1.0"
-    />
     <Square renderable="true" renderingInfo="3069 3069 6138 6138 0" color="0.0039 0.3411 0.1059 1"/> 
     <!-- Squares Rotation is in degree -->
     <!--

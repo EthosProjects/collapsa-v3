@@ -1,0 +1,20 @@
+<MyGameLevel>
+    <Camera CenterX="50" CenterY="33" Width="100"
+        Viewport="0 0 600 400"
+        BgColor="0.8 0.8 0.8 1.0"
+    />
+    <Camera CenterX="0" CenterY="0" Width="1080"
+        Viewport="0 0 1920 1080"
+        BgColor="0.8 0.8 0.8 1.0"
+    />
+    <!-- Squares Rotation is in degree -->
+    
+    <Square renderable="true" renderingInfo="50 33 25 25 0" color="0 0 1 1"/> 
+    <SpriteSquare renderable="true" renderingInfo="25 60 3 3 0" color="1 0 0 0.2" texture="/assets/minion_sprite.png" spritePixels="130 310 0 180"/>
+    <SpriteSquare renderable="true" renderingInfo="15 60 3 3 0" color="0 0 0 0" texture="/assets/minion_sprite.png" spritePixels="315 495 0 180"/>
+    <TextureSquare renderable="true" renderingInfo="15 50 20 20 0" color="0 0 0 0" texture="/assets/Consolas-72.png" spritePixels="0 512 0 512"/>
+        
+    
+    <TextureSquare renderable="true" renderingInfo="25 60 3 3 -5" color="1 0 0 0" texture="/assets/minion_portal.png" />
+    <TextureSquare renderable="true"  renderingInfo="15 60 3 3 -5" color="1 0 0 0" texture="/assets/minion_collector.png" />
+</MyGameLevel>

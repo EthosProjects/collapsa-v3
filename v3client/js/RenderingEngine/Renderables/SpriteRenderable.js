@@ -28,8 +28,6 @@ export default class SpriteRenderable extends TextureRenderable {
         this._textureTop = top;
     }
     setElementPixelPositions(left, right, bottom, top) {
-        console.log(this._texture);
-        console.trace();
         const textureInfo = RenderingEngine.Resources.retrieve(this._texture);
         // entire image width, height
         const imageW = textureInfo._width;

@@ -22,7 +22,7 @@ function downloadAsset(assetName) {
 }
 await Promise.all([
     ASSET_NAMES.map((p) => RenderingEngine.Resources.Texture.load(p)),
-    RenderingEngine.Resources.Font.load('/img/Zorque.woff', 'Zorque'),
+    RenderingEngine.Resources.Font.loadHTML('/img/Zorque.woff', 'Zorque'),
 ]);
 new Alert('Loaded Fonts and images', 'success');
 const gameplayScene = new GameplayScene();
@@ -53,4 +53,4 @@ document.getElementById('enterGameForm').addEventListener('submit', (e) => {
     e.preventDefault();
     startGame(document.getElementById('enterGameUsernameInput').value || 'Collapsa.io');
 });
-startGame(document.getElementById('enterGameUsernameInput').value || 'Collapsa.io');
+//startGame(document.getElementById('enterGameUsernameInput').value || 'Collapsa.io');

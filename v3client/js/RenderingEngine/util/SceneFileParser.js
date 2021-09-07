@@ -64,7 +64,6 @@ export default class SceneFileParser {
                         .getNamedItem('spritePixels')
                         .value.split(' ')
                         .map((n) => +n);
-                    console.log(spritePixelCoordinates);
                     renderable.setElementPixelPositions(...spritePixelCoordinates);
                 } else renderable = new TextureRenderable(t);
             } else renderable = new BaseRenderable();
