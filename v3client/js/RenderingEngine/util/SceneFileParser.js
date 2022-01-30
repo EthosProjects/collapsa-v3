@@ -19,24 +19,26 @@ export default class SceneFileParser {
         return elements;
     }
     parseCamera() {
-        var camElm = this._getElementsByTagName('Camera');
-        var cx = Number(camElm[0].getAttribute('CenterX'));
-        var cy = Number(camElm[0].getAttribute('CenterY'));
-        var w = Number(camElm[0].getAttribute('Width'));
-        var viewport = camElm[0].getAttribute('Viewport').split(' ');
-        var bgColor = camElm[0].getAttribute('BgColor').split(' ');
-        // make sure viewport and color are number
-        for (var j = 0; j < 4; j++) {
-            bgColor[j] = Number(bgColor[j]);
-            viewport[j] = Number(viewport[j]);
+        const cameraElement = this._getElementsByTagName('Camera')[0];
+        const center = {
+            x: Number(cameraElement.getAttribute('CenterX')),
+            y: Number(cameraElement.getAttribute('CenterY')),
+        };
+        const width = Number(cameraElement.getAttribute('Width'));
+        const viewport = cameraElement.getAttribute('Viewport').split(' ');
+        const color = cameraElement.getAttribute('BgColor').split(' ');
+        // make sure viewport and color are numbers
+        for (let i = 0; i < 4; i++) {
+            viewport[i] = Number(viewport[i]);
+            color[i] = Number(color[i]);
         }
-        var cam = new Camera(
-            vec2.fromValues(cx, cy), // position of the camera
-            w, // width of camera
+        const camera = new Camera(
+            center, // position of the camera
+            width, // width of the camera
             viewport, // viewport (orgX, orgY, width, height)
         );
-        cam.bgColor = bgColor;
-        return cam;
+        camera._bgColor = color;
+        return camera;
     }
     parseRenderables() {
         let elements = this._sceneXML.querySelectorAll('[renderable=true]');

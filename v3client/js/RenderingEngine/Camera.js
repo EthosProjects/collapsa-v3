@@ -1,9 +1,10 @@
 import { mat4 } from '../glMatrix/index.js';
+import { VectorInterpolator } from './Interpolators/exports.js';
 const webgl = RenderingEngine.Core.webgl;
 export default class Camera {
     constructor(center, width, viewport) {
         // WC and viewport position and size
-        this._center = center;
+        this._center = new VectorInterpolator(center, 0.99);
         this._width = width;
         this._viewport = viewport; // [x, y, width, height]
         this._nearPlane = 0;
@@ -47,8 +48,8 @@ Camera.prototype.setupViewProjection = function () {
     // Step B1: define the view matrix
     mat4.lookAt(
         this._viewMatrix,
-        [this._center[0], this._center[1], 10], // WC center
-        [this._center[0], this._center[1], 0], //
+        [this._center.visualX, this._center.visualY, 10], // WC center
+        [this._center.visualX, this._center.visualY, 0], //
         [0, 1, 0],
     ); // orientation
 

@@ -58,7 +58,14 @@ export default class GameplayScene extends Scene {
                             username: messageReader.readString(16),
                         });
                         this._entities.set((constants.PLAYER.TYPE << 8) + player.id, player);
-                        this.mainPlayer = this._entities.get((constants.PLAYER.TYPE << 8) + playerID);
+                        if (!this.mainPlayer && this._entities.has((constants.PLAYER.TYPE << 8) + playerID)) {
+                            const resolution = this._camera._width / 320;
+                            this.mainPlayer = this._entities.get((constants.PLAYER.TYPE << 8) + playerID);
+
+                            this._camera._center.x = this.mainPlayer.clientView.position.visualX * resolution;
+                            this._camera._center.y = this.mainPlayer.clientView.position.visualY * resolution;
+                            this._camera._center.instant();
+                        }
                         //Players[player.id] = player;
                     }
                     const treeCount = messageReader.readUint8();
@@ -159,15 +166,15 @@ export default class GameplayScene extends Scene {
         if (gameMovement[0] & 4) this.mainPlayer.clientView.velocity.y = -10;
         if (gameMovement[0] & 8) this.mainPlayer.clientView.velocity.x = 10;
         if (gameMovement[0] & 2) this.mainPlayer.clientView.velocity.x = -10;
+
         this._entities.update(delta);
     }
     draw() {
         if (!this.mainPlayer) return;
         const resolution = this._camera._width / 320;
-        this._camera._center = new Float32Array([
-            this.mainPlayer.clientView.position.x * resolution,
-            this.mainPlayer.clientView.position.y * resolution,
-        ]);
+        ///console.log(this.mainPlayer.clientView.position)
+        this._camera._center.x = this.mainPlayer.clientView.position.visualX * resolution;
+        this._camera._center.y = this.mainPlayer.clientView.position.visualY * resolution;
         // Step A: clear the canvas
         RenderingEngine.Core.resizeCanvas(this._camera);
         RenderingEngine.Core.clearCanvas([0.95, 0.95, 0.95, 1.0]); // clear to light gray

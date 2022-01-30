@@ -35,8 +35,8 @@
         "email": "logospiercing@gmail.com"
     },
     "engines": {
-        "node": "v15.11.0",
-        "npm": "7.20.5"
+        "node": "v16.13.2",
+        "npm": "8.1.2"
     },
     "type": "module"
 }

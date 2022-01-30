@@ -388,9 +388,7 @@ export default class Player extends Entity {
         LeaderboardMethods.removePlayer(g.leaderboard, this.id, g);
         g.Players[this.id] = undefined;
         g.PlayerCount--;
-        g.qtree.remove(
-            this,
-        ); /*
+        g.qtree.remove(this); /*
         if (this.socket.userid) {
             let collapsauserbase = mongoDB.databases.get('collapsa').collections.get('collapsauserbase');
             let user = new collapsauserbaseUser(collapsauserbase.documents.get(this.socket.userid).data);

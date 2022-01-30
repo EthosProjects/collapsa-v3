@@ -1,5 +1,6 @@
 import { BaseEntity } from '../../RenderingEngine/Entities/exports.js';
 import { BaseRenderable, SpriteRenderable, TextureRenderable } from '../../RenderingEngine/Renderables/exports.js';
+import { VectorInterpolator } from '../../RenderingEngine/Interpolators/exports.js';
 import Camera from '../../RenderingEngine/Camera.js';
 import { mat4 } from '../../glMatrix/index.js';
 export default class Player extends BaseEntity {
@@ -15,7 +16,7 @@ export default class Player extends BaseEntity {
         ];
         this.id = id;
         this.clientView = {
-            position: { ...position },
+            position: new VectorInterpolator(position, 0.99),
             velocity: { ...velocity },
             hands: {
                 id: 0,
@@ -32,20 +33,11 @@ export default class Player extends BaseEntity {
             },
         };
     }
-    reconcilliate(delta) {
-        let xDifference = this.serverView.position.x - this.clientView.position.x;
-        let yDifference = this.serverView.position.y - this.clientView.position.y;
-        if (xDifference > 16 || xDifference < -16) this.clientView.position.x = this.serverView.position.x;
-        if (yDifference > 16 || yDifference < -16) this.clientView.position.y = this.serverView.position.y;
-        this.clientView.position.x += xDifference * delta;
-        this.clientView.position.y += yDifference * delta;
-    }
+    reconcilliate(delta) {}
     predict(delta) {
         const { clientView, serverView } = this;
         clientView.position.x += clientView.velocity.x * delta;
         clientView.position.y += clientView.velocity.y * delta;
-        serverView.position.x += serverView.velocity.x * delta;
-        serverView.position.y += serverView.velocity.y * delta;
         if (clientView.hands.percent == 1) {
             clientView.hands.percent = 0;
             if (clientView.hands.id < 2) clientView.hands.id = clientView.hands.id ^ 1;
@@ -65,9 +57,11 @@ export default class Player extends BaseEntity {
     }
     update(delta) {
         this.predict(delta);
-        this.reconcilliate(delta);
+        this.clientView.position.update();
     }
     pushUpdate({ position, velocity }) {
+        this.clientView.position.x = position.x;
+        this.clientView.position.y = position.y;
         this.serverView.position = { ...position };
         this.serverView.velocity = { ...velocity };
         this.clientView.velocity = { ...velocity };
@@ -116,19 +110,21 @@ export default class Player extends BaseEntity {
         mat4.translate(
             mainMatrix,
             mainMatrix,
-            new Float32Array([clientView.position.x * resolution, clientView.position.y * resolution, 0.0]),
+            new Float32Array([clientView.position.visualX * resolution, clientView.position.visualY * resolution, 0.0]),
         );
+        /*
         bodyTransform.position = new Float32Array([
             serverView.position.x * resolution,
             serverView.position.y * resolution,
         ]);
-        /*
+
         this._renderable.color = [0, 0, 1, 1];
-        this._renderable.draw(camera);*/
+        this._renderable.draw(camera);
+        */
         this._renderable.color = [0, 0, 0, 0];
         bodyTransform.position = new Float32Array([
-            clientView.position.x * resolution,
-            clientView.position.y * resolution,
+            clientView.position.visualX * resolution,
+            clientView.position.visualY * resolution,
         ]);
         this.renderables[0].draw(camera);
         //Draw left hand

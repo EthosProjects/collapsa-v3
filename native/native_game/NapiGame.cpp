@@ -30,7 +30,7 @@ namespace Collapsa {
         Napi::ArrayBuffer message = info[0].As<Napi::ArrayBuffer>();
         InputMessage* inputMessage = new InputMessage {
             new uint8_t[message.ByteLength()] { 0 },
-            message.ByteLength(), 
+            (uint32_t) message.ByteLength(), 
             (std::string) info[1].As<Napi::Object>().Get("id").As<Napi::String>()
         };
         uint8_t* arrayBufferData = reinterpret_cast<uint8_t*>(message.Data());

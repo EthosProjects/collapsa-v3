@@ -26,6 +26,7 @@ let httpsServer;
  */
 let httpServer;
 if (process.env.NODE_ENV == 'development') {
+    process.env.PORT = process.env.PORT || 443;
     //HTTP/HTTPS server requirements
     const key = fs.readFileSync('encryption/server.key') + '';
     const cert = fs.readFileSync('encryption/www_collapsa_io.crt') + '';
@@ -36,15 +37,15 @@ if (process.env.NODE_ENV == 'development') {
         ca: ca,
     };
     httpsServer = https.createServer(httpsOptions, app).listen(443, () => {
-        console.log('listeneing');
+        console.log('listening on port 443');
         //loadEvents.set('HTTPS Server', ['HTTPS Server is listening', timerToString(Date.now() - loginStart)]);
         //checkStatus();
     });
     global.hServer = httpsServer;
 } else {
-    console.log(process.env.PORT);
+    process.env.PORT = process.env.PORT || 80;
     httpServer = http.createServer(app).listen(process.env.PORT, () => {
-        console.log('listening');
+        console.log('listening on port 80');
     });
     app.use(function (req, res, next) {
         /*res.setHeader('Strict-Transport-Security', 'max-age=8640000; includeSubDomains');
@@ -98,27 +99,6 @@ app.use((req, res, next) => {
 //Game Stuff
 import { Game, Games } from './v3lib/Game.js';
 new Game('usaeast1');
-let wss = new WebSocket.Server({ noServer: true });
-function heartbeat() {
-    this.isAlive = true;
-}
-wss.on('connection', (socket) => {
-    console.log('localbot connected');
-    stopBots();
-    socket.isAlive = true;
-    socket.on('pong', heartbeat);
-    socket.on('close', () => {
-        startBots();
-        console.log('localbot disconnected');
-    });
-});
-const pingPong = setInterval(() => {
-    wss.clients.forEach((ws) => {
-        if (ws.isAlive === false) return ws.terminate();
-        ws.isAlive = false;
-        ws.ping();
-    });
-}, 30000);
 global.hServer.on('upgrade', (request, socket, head) => {
     if (request.url.match(/^\/games\//)) {
         if (Games.has(request.url.match(/^\/games\/(.*)/)[1])) {
