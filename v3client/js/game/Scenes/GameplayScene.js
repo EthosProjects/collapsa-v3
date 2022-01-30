@@ -61,10 +61,11 @@ export default class GameplayScene extends Scene {
                         if (!this.mainPlayer && this._entities.has((constants.PLAYER.TYPE << 8) + playerID)) {
                             const resolution = this._camera._width / 320;
                             this.mainPlayer = this._entities.get((constants.PLAYER.TYPE << 8) + playerID);
-
-                            this._camera._center.x = this.mainPlayer.clientView.position.visualX * resolution;
-                            this._camera._center.y = this.mainPlayer.clientView.position.visualY * resolution;
-                            this._camera._center.instant();
+                            this._camera.setCenter(
+                                this.mainPlayer.clientView.position.visualX * resolution,
+                                this.mainPlayer.clientView.position.visualY * resolution,
+                            );
+                            this._camera.shake(100, 100, 15, 20);
                         }
                         //Players[player.id] = player;
                     }
@@ -156,9 +157,6 @@ export default class GameplayScene extends Scene {
             bw.writeUint16(gameMovement[4]);
             bw.writeUint16(gameMovement[5]);
             ws.send(bw.arrayBuffer);
-            let key = gameMovement[0];
-            let angle = (gameMovement[2] * 360) / 255;
-            this.mainPlayer._renderable._transform.setRotationInDegree(angle);
         }
         let angle = (gameMovement[2] * 360) / 255;
         this.mainPlayer._renderable._transform.setRotationInDegree(angle);
@@ -170,11 +168,14 @@ export default class GameplayScene extends Scene {
         this._entities.update(delta);
     }
     draw() {
+        // If there isn't a player to center on, do nothing
         if (!this.mainPlayer) return;
         const resolution = this._camera._width / 320;
-        ///console.log(this.mainPlayer.clientView.position)
-        this._camera._center.x = this.mainPlayer.clientView.position.visualX * resolution;
-        this._camera._center.y = this.mainPlayer.clientView.position.visualY * resolution;
+        this._camera.moveCenter(
+            this.mainPlayer.clientView.position.visualX * resolution,
+            this.mainPlayer.clientView.position.visualY * resolution,
+        );
+        this._camera.update();
         // Step A: clear the canvas
         RenderingEngine.Core.resizeCanvas(this._camera);
         RenderingEngine.Core.clearCanvas([0.95, 0.95, 0.95, 1.0]); // clear to light gray

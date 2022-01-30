@@ -19,6 +19,14 @@ export default class VectorInterpolator extends BaseInterpolator {
         this._vY = this._fY - u.y * (1 - this._rate) ** t;
         this.updateRate(t);
     }
+    set value(v) {
+        const t = (Date.now() - this.start) / 1000;
+        this._iX = this._vX = this._fX - (this._fX - this._iX) * (1 - this._rate) ** t;
+        this._iY = this._vY = this._fY - (this._fY - this._iY) * (1 - this._rate) ** t;
+        this.start += t * 1000;
+        this._fX = v.x;
+        this._fY = v.y;
+    }
     get x() {
         return this._fX;
     }
